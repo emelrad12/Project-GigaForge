@@ -1,32 +1,46 @@
 #pragma once
 #include "SparseArray.h"
 
-template <typename T>
-class ComponentArray
+namespace GigaEntity
 {
-public:
-	ComponentArray(int chunkCount, int chunkSize) : chunkCount(chunkCount),
-	                                                chunkSize(chunkSize),
-	                                                totalSize(chunkSize * chunkCount),
-	                                                data(chunkCount, chunkSize),
-	                                                entityContains(chunkCount, chunkSize)
+	template <typename T>
+	class ComponentArray
 	{
-	}
+	public:
+		ComponentArray(int chunkCount, int chunkSize) : data(chunkCount, chunkSize),
+		                                                entityContains(chunkCount, chunkSize),
+		                                                chunkCount(chunkCount),
+		                                                chunkSize(chunkSize),
+		                                                totalSize(chunkSize * chunkCount)
+		{
+		}
 
-	bool ContainsEntity(int entity)
-	{
-		return entityContains[entity];
-	}
+		bool ContainsEntity(int entity)
+		{
+			return entityContains[entity];
+		}
 
-	T& operator[](int index)
-	{
-		return data[index];
-	}
+		T& operator[](int index)
+		{
+			return data[index];
+		}
 
-	SparseArray<T> data;
-	SparseArray<bool> entityContains;
+		void Set(int index, T item)
+		{
+			if (!data.ContainsChunkForItem(index))
+			{
+				data.AllocateChunkForItem(index);
+				entityContains.AllocateChunkForItem(index);
+			}
+			data[index] = item;
+			entityContains[index] = true;
+		}
 
-	const int chunkCount;
-	const int chunkSize;
-	const int totalSize;
-};
+		SparseArray<T> data;
+		SparseArray<bool> entityContains;
+
+		const int chunkCount;
+		const int chunkSize;
+		const int totalSize;
+	};
+}
