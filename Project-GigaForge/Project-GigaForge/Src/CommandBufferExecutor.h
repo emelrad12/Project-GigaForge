@@ -14,9 +14,8 @@ namespace GigaEntity
 		{
 			auto& commands = std::any_cast<concurrent_vector<AddCommand<T>>&>(commandsAny);
 			auto& componentArray = std::any_cast<ComponentArray<T>&>(componentArrayAny);
-			for (size_t i = 0; i < commands.size(); i++)
+			for (auto command : commands)
 			{
-				auto command = commands[i];
 				componentArray.Set(command.entityId, command.item);
 			}
 		}
