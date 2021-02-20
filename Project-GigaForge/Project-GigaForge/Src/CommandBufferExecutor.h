@@ -17,23 +17,24 @@ namespace GigaEntity
 			auto size = commands.size();
 			for (int i = 0; i < size; i++)
 			{
-				if (currentChunk.end <= 0 || i >= currentChunk.end)
+				auto command = commands[i];
+				auto entityId = command.entityId;
+				if (currentChunk.end <= 0 || entityId >= currentChunk.end || entityId < currentChunk.start)
 				{
-					currentChunk = componentArray.GetCombinedChunk(i);
+					currentChunk = componentArray.GetCombinedChunk(entityId);
 				}
 
 				if (currentChunk.end == 0)
 				{
-					componentArray.AllocateChunk(i);
-					currentChunk = componentArray.GetCombinedChunk(i);
+					componentArray.AllocateChunk(entityId);
+					currentChunk = componentArray.GetCombinedChunk(entityId);
 				}
 
-				if (currentChunk.end <= 0 || i >= currentChunk.end)
+				if (currentChunk.end <= 0 || entityId >= currentChunk.end)
 				{
 					throw std::exception("Failed to allocate");
 				}
-				auto command = commands[i];
-				componentArray.SetAt(currentChunk, command.entityId, command.item);
+				componentArray.SetAt(currentChunk, entityId, command.item);
 			}
 		}
 	};

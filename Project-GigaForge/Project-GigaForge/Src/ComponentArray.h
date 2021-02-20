@@ -6,13 +6,13 @@ namespace GigaEntity
 	template <typename T>
 	struct CombinedChunk
 	{
-		CombinedChunk(int end, int chunkStart, T* data, bool* entityContains) : end(end), chunkStart(chunkStart),
+		CombinedChunk(int end, int chunkStart, T* data, bool* entityContains) : end(end), start(chunkStart),
 			data(data), entityContains(entityContains)
 		{
 		}
 
 		int end;
-		int chunkStart;
+		int start;
 		T* data;
 		bool* entityContains;
 	};
@@ -42,17 +42,22 @@ namespace GigaEntity
 		CombinedChunk<T> GetCombinedChunk(int index)
 		{
 			auto chunkId = data.GetChunkIndex(index);
-			return CombinedChunk<T>(data.GetChunkValidUntil(chunkId),
-			                        chunkId * chunkSize,
-			                        data.GetChunkFastHandle(chunkId),
-			                        entityContains.GetChunkFastHandle(chunkId));
+			auto returnValue = CombinedChunk<T>(data.GetChunkValidUntil(chunkId),
+			                                    chunkId * chunkSize,
+			                                    data.GetChunkFastHandle(chunkId),
+			                                    entityContains.GetChunkFastHandle(chunkId));
+			if (index - returnValue.start < 0)
+			{
+				__debugbreak();
+			}
+			return returnValue;
 		}
 
 		void SetAt(CombinedChunk<T> combinedChunk, int itemIndex, T& item)
 		{
-			itemIndex -= combinedChunk.chunkStart;
-			data.SetAt(combinedChunk.data, itemIndex, item);
-			entityContains.SetAt(combinedChunk.entityContains, itemIndex, true);
+			auto newIndex = itemIndex - combinedChunk.start;
+			data.SetAt(combinedChunk.data, newIndex, item);
+			entityContains.SetAt(combinedChunk.entityContains, newIndex, true);
 		}
 
 		void AllocateChunk(int index)

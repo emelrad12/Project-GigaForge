@@ -18,13 +18,13 @@ namespace GigaEntity
 	template <typename T>
 	class ConcurrentVector
 	{
-		vector<T> items;
+		T* items;
 		CopyableAtomic<int> currentIndex;
 	public:
 		ConcurrentVector()
 		{
 			constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
-			items = vector<T>(count);
+			items = new T[count];
 		}
 
 		void push_back(T item)

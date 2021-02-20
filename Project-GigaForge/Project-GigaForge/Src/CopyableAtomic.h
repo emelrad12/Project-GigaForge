@@ -19,6 +19,10 @@ public:
 	CopyableAtomic& operator=(const CopyableAtomic<T>& other)
 	{
 		this->store(other.load(std::memory_order_relaxed), std::memory_order_relaxed);
+		if(*this != 0)
+		{
+			__debugbreak();
+		}
 		return *this;
 	}
 };

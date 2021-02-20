@@ -11,7 +11,7 @@ void Print(T data)
 	std::cout << data << std::endl;
 }
 
-
+#define ompLoop omp parallel for
 int main()
 {
 	Timer timer("Taken: ");
@@ -29,11 +29,12 @@ int main()
 	buffer.RegisterComponent<uint8_t>();
 	buffer.RegisterComponent<int8_t>();
 	constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
+	const int scheduleNum = 1024 * 1024;
 	timer.start();
 	auto task1 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<int>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<int>(i, i, handle);
@@ -42,7 +43,7 @@ int main()
 	auto task2 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<double>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<double>(i, i, handle);
@@ -51,7 +52,7 @@ int main()
 	auto task3 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<bool>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<bool>(i, true, handle);
@@ -60,7 +61,7 @@ int main()
 	auto task4 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<short>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<short>(i, true, handle);
@@ -69,7 +70,7 @@ int main()
 	auto task5 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<unsigned>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<unsigned>(i, true, handle);
@@ -78,7 +79,7 @@ int main()
 	auto task6 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<long long>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<long long>(i, true, handle);
@@ -87,7 +88,7 @@ int main()
 	auto task7 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<uint8_t>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<uint8_t>(i, true, handle);
@@ -96,7 +97,7 @@ int main()
 	auto task8 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<int8_t>();
-#pragma omp parallel for
+#pragma ompLoop
 		for (int i = 0; i < count; i++)
 		{
 			buffer.AddComponent<int8_t>(i, true, handle);
@@ -127,7 +128,7 @@ int main()
 	auto array3 = manager.GetComponentArray<bool>();
 	for (int i = 0; i < count; i++)
 	{
-		if (array1[i] != (int)i || array2[i] != (double)i || array3[i] != true)
+		if (array1[i] != i || array2[i] != i || array3[i] != true)
 		{
 			throw "false";
 		}
