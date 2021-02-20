@@ -44,10 +44,10 @@
     <ClInclude Include="Src\CommandBufferExecutor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\HanaTools.h">
+    <ClInclude Include="Timer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
+    <ClInclude Include="Src\CopyableAtomic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

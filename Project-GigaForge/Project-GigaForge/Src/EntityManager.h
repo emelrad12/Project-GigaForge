@@ -27,9 +27,9 @@ namespace GigaEntity
 			return std::any_cast<ComponentArray<T>>(data[name]);
 		}
 
-		void ExecuteCommands(CommandBuffer commandBuffer)
+		void ExecuteCommands(CommandBuffer& commandBuffer)
 		{
-#pragma omp parallel for
+			#pragma omp parallel for
 			for (int i = 0; i < types.size(); i++)
 			{
 				auto type = types[i];

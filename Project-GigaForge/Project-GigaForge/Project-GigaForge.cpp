@@ -1,17 +1,23 @@
 #include "Globals.h"
+#include <thread>
 #include "Timer.h"
 #include "Src/ComponentArray.h"
 #include "Src/EntityManager.h"
-#include "Src/HanaTools.h"
 #include "cassert"
+#ifdef _DEBUG
+#define DEBUG true
+#else
+#define DEBUG false
+#endif
 template <typename T>
 void Print(T data)
 {
 	std::cout << data << std::endl;
 }
 
+
 int main()
-{
+{;
 	Timer timer("Taken: ");
 	GigaEntity::EntityManager manager = GigaEntity::EntityManager();
 	manager.AddType<int>();
@@ -21,7 +27,7 @@ int main()
 	buffer.RegisterComponent<int>();
 	buffer.RegisterComponent<double>();
 	buffer.RegisterComponent<bool>();
-	constexpr auto count = 5000 * 10000;
+	constexpr auto count = DEBUG ? 5000 * 1000 : 5000 * 10000;
 	timer.start();
 	auto task1 = [&buffer]()
 	{
