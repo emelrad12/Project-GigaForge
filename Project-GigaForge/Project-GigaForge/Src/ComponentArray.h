@@ -4,6 +4,20 @@
 namespace GigaEntity
 {
 	template <typename T>
+	struct CombinedChunk
+	{
+		CombinedChunk(int end, int chunkStart, T* data, bool* entityContains) : end(end), chunkStart(chunkStart),
+			data(data), entityContains(entityContains)
+		{
+		}
+
+		int end;
+		int chunkStart;
+		T* data;
+		bool* entityContains;
+	};
+
+	template <typename T>
 	class ComponentArray
 	{
 	public:
@@ -25,9 +39,20 @@ namespace GigaEntity
 			return data[index];
 		}
 
-		int GetValidChunkUntil(int index)
+		CombinedChunk<T> GetCombinedChunk(int index)
 		{
-			return data.GetChunkValidUntil(index);
+			auto chunkId = data.GetChunkIndex(index);
+			return CombinedChunk<T>(data.GetChunkValidUntil(chunkId),
+			                        chunkId * chunkSize,
+			                        data.GetChunkFastHandle(chunkId),
+			                        entityContains.GetChunkFastHandle(chunkId));
+		}
+
+		void SetAt(CombinedChunk<T> combinedChunk, int itemIndex, T& item)
+		{
+			itemIndex -= combinedChunk.chunkStart;
+			data.SetAt(combinedChunk.data, itemIndex, item);
+			entityContains.SetAt(combinedChunk.entityContains, itemIndex, true);
 		}
 
 		void AllocateChunk(int index)

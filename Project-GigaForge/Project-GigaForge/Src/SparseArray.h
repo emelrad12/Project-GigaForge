@@ -24,11 +24,20 @@ namespace GigaEntity
 			delete[] data[chunkId];
 		}
 
-		int GetChunkValidUntil(int itemId)
+		int GetChunkValidUntil(int chunkId)
 		{
-			itemId /= chunkSize;
-			if (data[itemId] == nullptr)return 0;
-			return (itemId + 1) * chunkSize;
+			if (data[chunkId] == nullptr)return 0;
+			return (chunkId + 1) * chunkSize;
+		}
+
+		T* GetChunkFastHandle(int chunkId)
+		{
+			return data[chunkId];
+		}
+		
+		int GetChunkIndex(int itemId) const
+		{
+			return itemId / chunkSize;
 		}
 
 		bool ContainsChunkForItem(int itemId)
@@ -41,6 +50,11 @@ namespace GigaEntity
 		{
 			itemId /= chunkSize;
 			data[itemId] = new T[chunkSize];
+		}
+
+		void SetAt(T* chunk, int itemIndex, const T& item)
+		{
+			chunk[itemIndex] = item;
 		}
 
 		T& operator[](int index)

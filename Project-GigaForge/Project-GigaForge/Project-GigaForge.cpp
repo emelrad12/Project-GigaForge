@@ -23,6 +23,11 @@ int main()
 	buffer.RegisterComponent<int>();
 	buffer.RegisterComponent<double>();
 	buffer.RegisterComponent<bool>();
+	buffer.RegisterComponent<short>();
+	buffer.RegisterComponent<unsigned>();
+	buffer.RegisterComponent<long long>();
+	buffer.RegisterComponent<uint8_t>();
+	buffer.RegisterComponent<int8_t>();
 	constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
 	timer.start();
 	auto task1 = [&buffer]()
@@ -52,14 +57,69 @@ int main()
 			buffer.AddComponent<bool>(i, true, handle);
 		}
 	};
+	auto task4 = [&buffer]()
+	{
+		auto& handle = buffer.GetFastAddHandle<short>();
+#pragma omp parallel for
+		for (int i = 0; i < count; i++)
+		{
+			buffer.AddComponent<short>(i, true, handle);
+		}
+	};
+	auto task5 = [&buffer]()
+	{
+		auto& handle = buffer.GetFastAddHandle<unsigned>();
+#pragma omp parallel for
+		for (int i = 0; i < count; i++)
+		{
+			buffer.AddComponent<unsigned>(i, true, handle);
+		}
+	};
+	auto task6 = [&buffer]()
+	{
+		auto& handle = buffer.GetFastAddHandle<long long>();
+#pragma omp parallel for
+		for (int i = 0; i < count; i++)
+		{
+			buffer.AddComponent<long long>(i, true, handle);
+		}
+	};
+	auto task7 = [&buffer]()
+	{
+		auto& handle = buffer.GetFastAddHandle<uint8_t>();
+#pragma omp parallel for
+		for (int i = 0; i < count; i++)
+		{
+			buffer.AddComponent<uint8_t>(i, true, handle);
+		}
+	};
+	auto task8 = [&buffer]()
+	{
+		auto& handle = buffer.GetFastAddHandle<int8_t>();
+#pragma omp parallel for
+		for (int i = 0; i < count; i++)
+		{
+			buffer.AddComponent<int8_t>(i, true, handle);
+		}
+	};
 
 	std::thread t1(task1);
 	std::thread t2(task2);
 	std::thread t3(task3);
+	std::thread t4(task4);
+	std::thread t5(task5);
+	std::thread t6(task6);
+	std::thread t7(task7);
+	std::thread t8(task8);
 
 	t1.join();
 	t2.join();
 	t3.join();
+	t4.join();
+	t5.join();
+	t6.join();
+	t7.join();
+	t8.join();
 	manager.ExecuteCommands(buffer);
 	timer.stop();
 	auto array1 = manager.GetComponentArray<int>();
@@ -67,8 +127,9 @@ int main()
 	auto array3 = manager.GetComponentArray<bool>();
 	for (int i = 0; i < count; i++)
 	{
-		assert(array1[i] == (int)i);
-		assert(array2[i] == (double)i);
-		assert(array3[i] == true);
+		if (array1[i] != (int)i || array2[i] != (double)i || array3[i] != true)
+		{
+			throw "false";
+		}
 	}
 }

@@ -13,24 +13,27 @@ namespace GigaEntity
 		{
 			auto& commands = std::any_cast<ConcurrentVector<AddCommand<T>>&>(commandsAny);
 			auto& componentArray = std::any_cast<ComponentArray<T>&>(componentArrayAny);
-			int validUntil = -1;
-			for (int i = 0; i < commands.size(); i++)
+			CombinedChunk<T> currentChunk = CombinedChunk<T>(-1, 0, nullptr, nullptr);
+			auto size = commands.size();
+			for (int i = 0; i < size; i++)
 			{
-				if (validUntil <= 0 || i >= validUntil)
+				if (currentChunk.end <= 0 || i >= currentChunk.end)
 				{
-					validUntil = componentArray.GetValidChunkUntil(i);
+					currentChunk = componentArray.GetCombinedChunk(i);
 				}
-				if (validUntil == 0)
+
+				if (currentChunk.end == 0)
 				{
 					componentArray.AllocateChunk(i);
-					validUntil = componentArray.GetValidChunkUntil(i);
+					currentChunk = componentArray.GetCombinedChunk(i);
 				}
-				if(validUntil <= 0 || i >= validUntil)
+
+				if (currentChunk.end <= 0 || i >= currentChunk.end)
 				{
 					throw std::exception("Failed to allocate");
 				}
 				auto command = commands[i];
-				componentArray.Set(command.entityId, command.item);
+				componentArray.SetAt(currentChunk, command.entityId, command.item);
 			}
 		}
 	};
