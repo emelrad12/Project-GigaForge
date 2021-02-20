@@ -7,7 +7,7 @@
 using concurrency::concurrent_vector;
 
 namespace GigaEntity
-{	
+{
 	template <typename T>
 	struct AddCommand
 	{
@@ -23,10 +23,11 @@ namespace GigaEntity
 	public:
 		ConcurrentVector()
 		{
-			items = vector<T>(5000 * 10000);
+			constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
+			items = vector<T>(count);
 		}
-		
-		void Add(T item)
+
+		void push_back(T item)
 		{
 			auto index = currentIndex++;
 			items[index] = item;
@@ -38,7 +39,7 @@ namespace GigaEntity
 			return items[index];
 		}
 
-		int Size() const
+		int size() const
 		{
 			return currentIndex;
 		}
@@ -50,7 +51,6 @@ namespace GigaEntity
 		template <typename T>
 		void RegisterComponent()
 		{
-			auto vecot = ConcurrentVector<T>();
 			const string name = typeid(T).name();
 			deleteComponentStreams[name] = ConcurrentVector<int>();
 			addStreams[name] = ConcurrentVector<AddCommand<T>>();
@@ -59,7 +59,7 @@ namespace GigaEntity
 		template <typename T>
 		void AddComponent(int entity, T item, ConcurrentVector<AddCommand<T>>& handle)
 		{
-			handle.Add(AddCommand<T>{item, entity});
+			handle.push_back(AddCommand<T>{item, entity});
 		}
 
 		template <typename T>
@@ -73,12 +73,12 @@ namespace GigaEntity
 		void RemoveComponent(int entityId)
 		{
 			const auto name = typeid(T).name();
-			deleteComponentStreams[name].Add(entityId);
+			deleteComponentStreams[name].push_back(entityId);
 		}
 
 		void DeleteEntity(int entityId)
 		{
-			deleteEntityStream.Add(entityId);
+			deleteEntityStream.push_back(entityId);
 		}
 
 		ConcurrentVector<int> deleteEntityStream;

@@ -24,6 +24,13 @@ namespace GigaEntity
 			delete[] data[chunkId];
 		}
 
+		int GetChunkValidUntil(int itemId)
+		{
+			itemId /= chunkSize;
+			if (data[itemId] == nullptr)return 0;
+			return (itemId + 1) * chunkSize;
+		}
+
 		bool ContainsChunkForItem(int itemId)
 		{
 			itemId /= chunkSize;

@@ -13,9 +13,22 @@ namespace GigaEntity
 		{
 			auto& commands = std::any_cast<ConcurrentVector<AddCommand<T>>&>(commandsAny);
 			auto& componentArray = std::any_cast<ComponentArray<T>&>(componentArrayAny);
-#pragma omp parallel for schedule(static, 1024)
-			for (int i = 0; i < commands.Size(); i++)
+			int validUntil = -1;
+			for (int i = 0; i < commands.size(); i++)
 			{
+				if (validUntil <= 0 || i >= validUntil)
+				{
+					validUntil = componentArray.GetValidChunkUntil(i);
+				}
+				if (validUntil == 0)
+				{
+					componentArray.AllocateChunk(i);
+					validUntil = componentArray.GetValidChunkUntil(i);
+				}
+				if(validUntil <= 0 || i >= validUntil)
+				{
+					throw std::exception("Failed to allocate");
+				}
 				auto command = commands[i];
 				componentArray.Set(command.entityId, command.item);
 			}

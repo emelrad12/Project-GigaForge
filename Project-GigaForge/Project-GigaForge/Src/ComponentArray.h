@@ -25,13 +25,19 @@ namespace GigaEntity
 			return data[index];
 		}
 
+		int GetValidChunkUntil(int index)
+		{
+			return data.GetChunkValidUntil(index);
+		}
+
+		void AllocateChunk(int index)
+		{
+			data.AllocateChunkForItem(index);
+			entityContains.AllocateChunkForItem(index);
+		}
+
 		void Set(int index, T item)
 		{
-			if (!data.ContainsChunkForItem(index))
-			{
-				data.AllocateChunkForItem(index);
-				entityContains.AllocateChunkForItem(index);
-			}
 			data[index] = item;
 			entityContains[index] = true;
 		}
