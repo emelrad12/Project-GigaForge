@@ -20,6 +20,11 @@ int main()
 	manager.AddType<int>();
 	manager.AddType<double>();
 	manager.AddType<bool>();
+	manager.AddType<short>();
+	manager.AddType<unsigned>();
+	manager.AddType<long long>();
+	manager.AddType<uint8_t>();
+	manager.AddType<int8_t>();
 	GigaEntity::CommandBuffer buffer = GigaEntity::CommandBuffer();
 	buffer.RegisterComponent<int>();
 	buffer.RegisterComponent<double>();
@@ -82,46 +87,81 @@ int main()
 	auto task4 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<short>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<short>(i, true, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<short>(index, true, handle);
+				}
+			}
 		}
 	};
 	auto task5 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<unsigned>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<unsigned>(i, true, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<unsigned>(index, true, handle);
+				}
+			}
 		}
 	};
 	auto task6 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<long long>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<long long>(i, true, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<long long>(index, true, handle);
+				}
+			}
 		}
 	};
 	auto task7 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<uint8_t>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<uint8_t>(i, true, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<uint8_t>(index, true, handle);
+				}
+			}
 		}
 	};
 	auto task8 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<int8_t>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<int8_t>(i, true, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<int8_t>(index, true, handle);
+				}
+			}
 		}
 	};
 
