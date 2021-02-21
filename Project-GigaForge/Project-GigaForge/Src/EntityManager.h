@@ -16,7 +16,7 @@ namespace GigaEntity
 		{
 			auto name = typeid(T).name();
 			types.emplace_back(name);
-			data[name] = std::any(ComponentArray<T>(1024 * 4, 1024 * 256));
+			data[name] = std::any(ComponentArray<T>(chunkCount, chunkSize));
 			addComponentExecutorFunction[name] = &CommandBufferExecutor::ExecuteAddStream<T>;
 		}
 

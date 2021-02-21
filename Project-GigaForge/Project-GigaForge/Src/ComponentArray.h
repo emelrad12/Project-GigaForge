@@ -15,6 +15,11 @@ namespace GigaEntity
 		int start;
 		T* data;
 		bool* entityContains;
+
+		static CombinedChunk<T> GetDefault()
+		{
+			return CombinedChunk<T>(-1, 0, nullptr, nullptr);
+		}
 	};
 
 	template <typename T>

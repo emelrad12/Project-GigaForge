@@ -11,7 +11,8 @@ void Print(T data)
 	std::cout << data << std::endl;
 }
 
-#define ompLoop omp parallel for
+#define ompLoop omp parallel for schedule(static, 5000 * 100)
+
 int main()
 {
 	Timer timer("Taken: ");
@@ -29,33 +30,53 @@ int main()
 	buffer.RegisterComponent<uint8_t>();
 	buffer.RegisterComponent<int8_t>();
 	constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
-	const int scheduleNum = 1024 * 1024;
 	timer.start();
 	auto task1 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<int>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<int>(i, i, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<int>(index, index, handle);
+				}
+			}
 		}
 	};
 	auto task2 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<double>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<double>(i, i, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<double>(index, index, handle);
+				}
+			}
 		}
 	};
 	auto task3 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<bool>();
-#pragma ompLoop
-		for (int i = 0; i < count; i++)
+		for (int offset = 0; offset < count; offset += chunkSize)
 		{
-			buffer.AddComponent<bool>(i, true, handle);
+#pragma ompLoop
+			for (int i = 0; i < chunkSize; i++)
+			{
+				const auto index = i + offset;
+				if (index < count)
+				{
+					buffer.AddComponent<bool>(index, true, handle);
+				}
+			}
 		}
 	};
 	auto task4 = [&buffer]()
@@ -121,6 +142,8 @@ int main()
 	t6.join();
 	t7.join();
 	t8.join();
+	timer.stop();
+	timer.start();
 	manager.ExecuteCommands(buffer);
 	timer.stop();
 	auto array1 = manager.GetComponentArray<int>();
@@ -128,6 +151,9 @@ int main()
 	auto array3 = manager.GetComponentArray<bool>();
 	for (int i = 0; i < count; i++)
 	{
+		auto val1 = array1[i];
+		auto val2 = array2[i];
+		auto val3 = array3[i];
 		if (array1[i] != i || array2[i] != i || array3[i] != true)
 		{
 			throw "false";
