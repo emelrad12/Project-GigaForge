@@ -1,8 +1,7 @@
 #pragma once
 #include <any>
-#include "../Globals.h"
+#include "Globals.h"
 #include <concurrent_vector.h>
-
 #include "CopyableAtomic.h"
 using concurrency::concurrent_vector;
 
@@ -23,7 +22,7 @@ namespace GigaEntity
 	public:
 		ConcurrentVector()
 		{
-			constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
+			constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;//todo
 			items = new T[count];
 		}
 

@@ -191,17 +191,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
-    <ClCompile Include="Src\CommandBuffer.cpp" />
-    <ClCompile Include="Src\CommandBufferExecutor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Globals.h" />
-    <ClInclude Include="Src\CommandBuffer.h" />
-    <ClInclude Include="Src\CommandBufferExecutor.h" />
-    <ClInclude Include="Src\ComponentArray.h" />
-    <ClInclude Include="Src\CopyableAtomic.h" />
-    <ClInclude Include="Src\EntityManager.h" />
-    <ClInclude Include="Src\SparseArray.h" />
+    <ClInclude Include="Src\Ecs\Globals.h" />
+    <ClInclude Include="Src\Ecs\CommandBuffer.h" />
+    <ClInclude Include="Src\Ecs\CommandBufferExecutor.h" />
+    <ClInclude Include="Src\Ecs\ComponentArray.h" />
+    <ClInclude Include="Src\Ecs\CopyableAtomic.h" />
+    <ClInclude Include="Src\Ecs\EntityManager.h" />
+    <ClInclude Include="Src\Ecs\SparseArray.h" />
+    <ClInclude Include="Src\Ecs\EcsSystem.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

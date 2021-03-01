@@ -36,7 +36,11 @@ namespace GigaEntity
 
 		bool ContainsEntity(int entity)
 		{
-			return entityContains[entity];
+			if( entityContains.ContainsChunkForItem(entity))
+			{
+				return entityContains[entity];//todo optimize
+			}
+			return false;
 		}
 
 		T& operator[](int index)

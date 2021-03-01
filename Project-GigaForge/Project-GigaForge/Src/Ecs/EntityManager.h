@@ -1,5 +1,5 @@
 #pragma once
-#include "../Globals.h"
+#include "Globals.h"
 #include <any>
 
 #include "CommandBuffer.h"
@@ -43,5 +43,6 @@ namespace GigaEntity
 		unordered_map<string, void(CommandBufferExecutor::*)(std::any commandsAny, std::any componentArrayAny)>
 		addComponentExecutorFunction = unordered_map<string, void(CommandBufferExecutor::*)(
 			                                             const std::any commandsAny, std::any componentArrayAny)>();
+		int itemCount = DEBUG ? 5000 * 100 : 5000 * 10000;//todo
 	};
 }

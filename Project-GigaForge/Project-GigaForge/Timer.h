@@ -11,7 +11,7 @@ public:
 		begin = std::chrono::high_resolution_clock::now();
 	}
 
-	void stop()
+	void stop(std::string name)
 	{
 		auto end = std::chrono::high_resolution_clock::now();
 		auto dur = end - begin;
@@ -27,13 +27,11 @@ public:
 		std::cout << name << ": " << ms << std::endl;
 	}
 
-	Timer(std::string name, bool useMicro = false): useMicro(useMicro)
+	Timer(bool useMicro = false): useMicro(useMicro)
 	{
-		Timer::name = name;
 	}
 
 private:
-	std::string name;
 	bool useMicro;
 	std::chrono::steady_clock::time_point begin;
 };

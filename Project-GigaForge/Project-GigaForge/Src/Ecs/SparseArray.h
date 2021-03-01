@@ -1,6 +1,4 @@
 #pragma once
-#include "../Globals.h"
-#include <bitset>
 
 namespace GigaEntity
 {
