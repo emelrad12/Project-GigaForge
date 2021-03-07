@@ -15,6 +15,18 @@ void CudaTest();
 
 #define ompLoop omp parallel for schedule(static, 5000 * 100)
 
+void LambdaFunc (int entityIndex, int& item, std::tuple<> arguments)
+{
+	if (item > entityIndex)
+	{
+		item--;
+	}
+	else
+	{
+		item++;
+	}
+};
+
 int main()
 {
 	CudaTest();
@@ -55,21 +67,13 @@ int main()
 	auto tu = tuple(std::ref(m));
 	auto& ref1 = std::get<0>(tu);
 	ref1++;
-	
+
 	auto system = EcsSystem(manager);
-	constexpr auto func = [](int index, std::tuple<std::tuple<int>, std::tuple<>> arguments)
-	{
-		// if (item > entityIndex)
-		// {
-		// 	item--;
-		// }
-		// else
-		// {
-		// 	item++;
-		// }
-	};
-	auto builder = system.Builder().WithEntities<std::tuple<int>>();
-	builder.WithFunction<func>().Foreach();
+	
+	auto builder = system.Builder().WithEntities<int>();
+	auto sys = builder.WithFunction<reinterpret_cast<void(*)()>(LambdaFunc)>();
+	sys.Run();
+	sys.Run();
 	timer.stop("System");
 
 	for (int i = 0; i < count; i++)
