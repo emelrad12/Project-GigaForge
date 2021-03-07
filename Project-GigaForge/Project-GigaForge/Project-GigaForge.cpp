@@ -11,10 +11,13 @@ void Print(T data)
 	std::cout << data << std::endl;
 }
 
+void CudaTest();
+
 #define ompLoop omp parallel for schedule(static, 5000 * 100)
 
 int main()
 {
+	CudaTest();
 	Timer timer(false);
 	auto manager = EntityManager();
 	manager.AddType<int>();
@@ -47,23 +50,27 @@ int main()
 	manager.ExecuteCommands(buffer);
 	timer.stop("Execute");
 	auto array1 = manager.GetComponentArray<int>();
-
+	timer.start();
+	int m = 50;
+	auto tu = tuple(std::ref(m));
+	auto& ref1 = std::get<0>(tu);
+	ref1++;
+	
 	auto system = EcsSystem(manager);
-	auto offset = 55;
-	constexpr auto func = [](int index, int& item, int offset)
+	constexpr auto func = [](int index, std::tuple<std::tuple<int>, std::tuple<>> arguments)
 	{
-		if (item + offset != index + offset)
-		{
-			item--;
-		}
-		else
-		{
-			item++;
-		}
+		// if (item > entityIndex)
+		// {
+		// 	item--;
+		// }
+		// else
+		// {
+		// 	item++;
+		// }
 	};
-
-	system.WithArguments<int>().EntitiesForeach<int, func>(offset);
-	system.WithArguments<int>().EntitiesForeach<int, func>(offset);
+	auto builder = system.Builder().WithEntities<std::tuple<int>>();
+	builder.WithFunction<func>().Foreach();
+	timer.stop("System");
 
 	for (int i = 0; i < count; i++)
 	{

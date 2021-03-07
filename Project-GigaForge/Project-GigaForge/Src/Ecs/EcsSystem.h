@@ -1,7 +1,7 @@
 #pragma once
-#include <functional>
-
 #include "EntityManager.h"
+using std::tuple;
+void func(int, tuple<tuple<>, tuple<>>);
 
 namespace GigaEntity
 {
@@ -15,50 +15,57 @@ namespace GigaEntity
 
 		EntityManager& manager;
 
-		template <typename ...ArgumentTypes>
-		struct WithArgumentsStruct
+		template <class TEntities, class TArguments, typename TFunctionArgs, void (*TFunctionPointer)(int, TFunctionArgs)>
+		struct FunctionBuilder
 		{
-			WithArgumentsStruct(EntityManager& manager)
-				: manager(manager)
+			FunctionBuilder(EntityManager& manager): manager(manager)
 			{
 			}
 
-			EntityManager& manager;
-
-			template <typename T1, void (*functionPointer)(int, T1&, ArgumentTypes ...)>
-			void EntitiesForeach(ArgumentTypes ... items)
+			template <class TNewArguments>
+			FunctionBuilder<TEntities, TNewArguments, TFunctionArgs, TFunctionPointer> WithArguments(TArguments newArgs)
 			{
-				auto arr1 = manager.GetComponentArray<T1>();
+				arguments = newArgs;
+				return FunctionBuilder<TEntities, TNewArguments, TFunctionArgs, TFunctionPointer>(manager);
+			}
+
+			template <class TNewEntities>
+			FunctionBuilder<TNewEntities, TArguments, TFunctionArgs, TFunctionPointer> WithEntities()
+			{
+				return FunctionBuilder<TNewEntities, TArguments, TFunctionArgs, TFunctionPointer>(manager);
+			}
+
+			template <void (*TNewFunctionPointer)(int, tuple<TEntities, TArguments>)>
+			FunctionBuilder<TEntities, TArguments, tuple<TEntities, TArguments>, TNewFunctionPointer> WithFunction()
+			{
+				return FunctionBuilder<TEntities, TArguments, tuple<TEntities, TArguments>, TNewFunctionPointer>(manager);
+			}
+
+			void Foreach()
+			{
+				auto t1 = std::get<0>(TEntities());
+				auto arr1 = manager.GetComponentArray<decltype(t1)>();
 				for (int i = 0; i < manager.itemCount; i++)
 				{
 					if (arr1.ContainsEntity(i))
 					{
-						functionPointer(i, arr1[i], items...);
+						auto entittyArgs = tuple(arr1[0]);
+						auto args = tuple(entittyArgs, arguments);
+						auto mergedArgs = std::tuple_cat(tuple(i), entittyArgs, tuple(args));
+						std::apply(TFunctionPointer,mergedArgs);
+						// TFunctionPointer(i, args);
 					}
 				}
 			}
 
-			template <typename T1, typename T2, void (*functionPointer)(int, T1&, T2&, ArgumentTypes ...)>
-			void EntitiesForeach(ArgumentTypes ... items)
-			{
-				auto arr1 = manager.GetComponentArray<T1>();
-				auto arr2 = manager.GetComponentArray<T2>();
-				for (int i = 0; i < manager.itemCount; i++)
-				{
-					if (arr1.ContainsEntity(i) && arr2.ContainsEntity(i))
-					{
-						functionPointer(i, arr1[i], arr2[i], items...);
-					}
-				}
-			}
+			TArguments arguments;
+			EntityManager& manager;
 		};
 
-		template <typename ...Types>
-		WithArgumentsStruct<Types...> WithArguments()
+		FunctionBuilder<tuple<>, tuple<>, tuple<tuple<>, tuple<>>, func> Builder()
 		{
-			return WithArgumentsStruct<Types...>(manager);
+			auto builder = FunctionBuilder<tuple<>, tuple<>, tuple<tuple<>, tuple<>>, func>(manager);
+			return builder;
 		}
-
-	private:
 	};
 }

@@ -69,16 +69,23 @@ namespace GigaEntity
 		}
 
 		template <typename T>
-		void RemoveComponent(int entityId)
+		concurrentVectorImpl<int>& GetFastDeleteHandle()
 		{
 			const auto name = typeid(T).name();
-			deleteComponentStreams[name].push_back(entityId);
+			return deleteComponentStreams[name];
+		}
+
+		template <typename T>
+		void RemoveComponent(int entityId, concurrentVectorImpl<int> handle)
+		{
+			handle.push_back(entityId);
 		}
 
 		void DeleteEntity(int entityId)
 		{
 			deleteEntityStream.push_back(entityId);
 		}
+
 
 		concurrentVectorImpl<int> deleteEntityStream;
 		unordered_map<string, concurrentVectorImpl<int>> deleteComponentStreams;
