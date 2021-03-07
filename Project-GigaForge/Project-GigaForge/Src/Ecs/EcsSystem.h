@@ -50,6 +50,7 @@ namespace GigaEntity
 			void Foreach(tuple<E1>)
 			{
 				auto arr1 = manager.GetComponentArray<E1>();
+#pragma omp parallel for 
 				for (int i = 0; i < manager.itemCount; i++)
 				{
 					if (arr1.ContainsEntity(i))
