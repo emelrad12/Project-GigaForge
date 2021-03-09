@@ -3,6 +3,7 @@
 #include "cassert"
 #include "Src/Ecs/EcsSystem.h"
 #include "Src/Ecs/EntityManager.h"
+#include "Src/Ecs/CommandBuffer.h"
 using namespace GigaEntity;
 
 template <typename T>
@@ -15,17 +16,28 @@ void CudaTest();
 
 #define ompLoop omp parallel for schedule(static, 5000 * 100)
 
-void LambdaFunc (int entityIndex, int& item, std::tuple<> arguments)
+struct ArgumentsObject
+{
+	ArgumentsObject(CommandBuffer buffer, FastHandle(float) floatHandle): buffer(buffer), floatHandle(floatHandle)
+	{
+	}
+
+	CommandBuffer& buffer;
+	FastHandle(float)& floatHandle;
+};
+
+void LambdaFunc(int entityIndex, int& item, ArgumentsObject arguments)
 {
 	if (item > entityIndex)
 	{
 		item--;
+		arguments.buffer.AddComponent(entityIndex, static_cast<float>(item), arguments.floatHandle);
 	}
 	else
 	{
 		item++;
 	}
-};
+}
 
 int main()
 {
@@ -33,6 +45,7 @@ int main()
 	Timer timer(false);
 	auto manager = EntityManager();
 	manager.AddType<int>();
+	manager.AddType<float>();
 	auto buffer = CommandBuffer();
 	buffer.RegisterComponent<int>();
 	constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
@@ -63,17 +76,16 @@ int main()
 	timer.stop("Execute");
 	auto array1 = manager.GetComponentArray<int>();
 	timer.start();
-	int m = 50;
-	auto tu = tuple(std::ref(m));
-	auto& ref1 = std::get<0>(tu);
-	ref1++;
 
 	auto system = EcsSystem(manager);
-	
-	auto builder = system.Builder().WithEntities<int>();
-	auto sys = builder.WithFunction<reinterpret_cast<void(*)()>(LambdaFunc)>();
+	auto newBuffer = CommandBuffer();
+	newBuffer.RegisterComponent<float>();
+	auto args = ArgumentsObject(newBuffer, newBuffer.GetFastAddHandle<float>());
+	auto builder = system.Builder().WithEntities<int>().WithArguments(args);
+	auto sys = builder.WithFunction < CastFunction(LambdaFunc) > ();
 	sys.Run();
 	sys.Run();
+	manager.ExecuteCommands(newBuffer);
 	timer.stop("System");
 
 	for (int i = 0; i < count; i++)

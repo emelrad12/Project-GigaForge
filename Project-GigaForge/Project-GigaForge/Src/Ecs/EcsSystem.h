@@ -3,6 +3,8 @@
 using std::tuple;
 void VoidFunc();
 
+#define CastFunction(func) reinterpret_cast<void(*)()>(func)
+
 namespace GigaEntity
 {
 	class EcsSystem
@@ -22,23 +24,26 @@ namespace GigaEntity
 			{
 			}
 
-			template <class TNewArguments>
-			FunctionBuilder<TEntities, TNewArguments, TFunctionPointer> WithArguments(TArguments newArgs)
+			FunctionBuilder(EntityManager& manager, TArguments newArguments) : manager(manager), arguments(newArguments)
 			{
-				arguments = newArgs;
-				return FunctionBuilder<TEntities, TNewArguments, TFunctionPointer>(manager);
+			}
+
+			template <class TNewArguments>
+			FunctionBuilder<TEntities, TNewArguments, TFunctionPointer> WithArguments(TNewArguments newArgs)
+			{
+				return FunctionBuilder<TEntities, TNewArguments, TFunctionPointer>(manager, newArgs);
 			}
 
 			template <typename... TNewEntities>
 			FunctionBuilder<tuple<TNewEntities...>, TArguments, TFunctionPointer> WithEntities()
 			{
-				return FunctionBuilder<tuple<TNewEntities...>, TArguments, TFunctionPointer>(manager);
+				return FunctionBuilder<tuple<TNewEntities...>, TArguments, TFunctionPointer>(manager, arguments);
 			}
 
 			template <void (*TNewFunctionPointer)()>
 			FunctionBuilder<TEntities, TArguments, TNewFunctionPointer> WithFunction()
 			{
-				return FunctionBuilder<TEntities, TArguments, TNewFunctionPointer>(manager);
+				return FunctionBuilder<TEntities, TArguments, TNewFunctionPointer>(manager, arguments);
 			}
 
 			void Run()
@@ -50,7 +55,7 @@ namespace GigaEntity
 			void Foreach(tuple<E1>)
 			{
 				auto arr1 = manager.GetComponentArray<E1>();
-#pragma omp parallel for 
+#pragma omp parallel for
 				for (int i = 0; i < manager.itemCount; i++)
 				{
 					if (arr1.ContainsEntity(i))

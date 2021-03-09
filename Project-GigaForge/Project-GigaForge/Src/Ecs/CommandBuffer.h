@@ -3,7 +3,8 @@
 #include "Globals.h"
 #include <concurrent_vector.h>
 #include "CopyableAtomic.h"
-using concurrency::concurrent_vector;
+
+#define FastHandle(type) concurrentVectorImpl<GigaEntity::AddCommand<type>>
 
 namespace GigaEntity
 {

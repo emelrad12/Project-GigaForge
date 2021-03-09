@@ -29,11 +29,12 @@ namespace GigaEntity
 
 		void ExecuteCommands(CommandBuffer& commandBuffer)
 		{
-			#pragma omp parallel for
+#pragma omp parallel for
 			for (int i = 0; i < types.size(); i++)
 			{
 				auto type = types[i];
-				(executor.*addComponentExecutorFunction[type])(commandBuffer.addStreams[type], data[type]);
+				if (commandBuffer.addStreams.find(type) != commandBuffer.addStreams.end())
+					(executor.*addComponentExecutorFunction[type])(commandBuffer.addStreams[type], data[type]);
 			}
 		}
 
@@ -43,6 +44,6 @@ namespace GigaEntity
 		unordered_map<string, void(CommandBufferExecutor::*)(std::any commandsAny, std::any componentArrayAny)>
 		addComponentExecutorFunction = unordered_map<string, void(CommandBufferExecutor::*)(
 			                                             const std::any commandsAny, std::any componentArrayAny)>();
-		int itemCount = DEBUG ? 5000 * 100 : 5000 * 10000;//todo
+		int itemCount = DEBUG ? 5000 * 100 : 5000 * 10000; //todo
 	};
 }
