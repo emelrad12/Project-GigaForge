@@ -42,8 +42,7 @@ namespace GigaEntity
 		CommandBufferExecutor executor = CommandBufferExecutor();
 		unordered_map<string, std::any> data = unordered_map<string, std::any>();
 		unordered_map<string, void(CommandBufferExecutor::*)(std::any commandsAny, std::any componentArrayAny)>
-		addComponentExecutorFunction = unordered_map<string, void(CommandBufferExecutor::*)(
-			                                             const std::any commandsAny, std::any componentArrayAny)>();
+		addComponentExecutorFunction = unordered_map<string, void(CommandBufferExecutor::*)(std::any commandsAny, std::any componentArrayAny)>();
 		int itemCount = DEBUG ? 5000 * 100 : 5000 * 10000; //todo
 	};
 }

@@ -17,14 +17,14 @@ namespace GigaEntity
 
 		EntityManager& manager;
 
-		template <class TEntities, class TArguments, void (*TFunctionPointer)()>
+		template <class TEntities, class TArgumentObject, void (*TFunctionPointer)()>
 		struct FunctionBuilder
 		{
 			FunctionBuilder(EntityManager& manager) : manager(manager)
 			{
 			}
 
-			FunctionBuilder(EntityManager& manager, TArguments newArguments) : manager(manager), arguments(newArguments)
+			FunctionBuilder(EntityManager& manager, TArgumentObject newArguments) : manager(manager), argumentObject(newArguments)
 			{
 			}
 
@@ -35,15 +35,15 @@ namespace GigaEntity
 			}
 
 			template <typename... TNewEntities>
-			FunctionBuilder<tuple<TNewEntities...>, TArguments, TFunctionPointer> WithEntities()
+			FunctionBuilder<tuple<TNewEntities...>, TArgumentObject, TFunctionPointer> WithEntities()
 			{
-				return FunctionBuilder<tuple<TNewEntities...>, TArguments, TFunctionPointer>(manager, arguments);
+				return FunctionBuilder<tuple<TNewEntities...>, TArgumentObject, TFunctionPointer>(manager, argumentObject);
 			}
 
 			template <void (*TNewFunctionPointer)()>
-			FunctionBuilder<TEntities, TArguments, TNewFunctionPointer> WithFunction()
+			FunctionBuilder<TEntities, TArgumentObject, TNewFunctionPointer> WithFunction()
 			{
-				return FunctionBuilder<TEntities, TArguments, TNewFunctionPointer>(manager, arguments);
+				return FunctionBuilder<TEntities, TArgumentObject, TNewFunctionPointer>(manager, argumentObject);
 			}
 
 			void Run()
@@ -68,11 +68,11 @@ namespace GigaEntity
 			template <typename ... EntityTypes>
 			void Call(void (*f)(), int index, EntityTypes&... entities)
 			{
-				auto castPointer = reinterpret_cast<void(*)(int, EntityTypes& ..., TArguments)>(f);
-				castPointer(index, entities..., arguments);
+				auto castPointer = reinterpret_cast<void(*)(int, EntityTypes& ..., TArgumentObject)>(f);
+				castPointer(index, entities..., argumentObject);
 			}
 
-			TArguments arguments;
+			TArgumentObject argumentObject;
 			EntityManager& manager;
 		};
 

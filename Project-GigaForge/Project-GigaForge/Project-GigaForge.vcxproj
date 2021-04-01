@@ -107,6 +107,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
     </Link>
+    <CudaCompile>
+      <CodeGeneration>compute_75,sm_75</CodeGeneration>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda
+ %(AdditionalOptions)</AdditionalOptions>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='NDebug|x64'">
     <ClCompile>
@@ -128,6 +134,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
     </Link>
+    <CudaCompile>
+      <CodeGeneration>compute_75,sm_75</CodeGeneration>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda
+ %(AdditionalOptions)</AdditionalOptions>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -158,6 +170,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
     </Link>
+    <CudaCompile>
+      <CodeGeneration>compute_75,sm_75</CodeGeneration>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda
+ %(AdditionalOptions)</AdditionalOptions>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'">
     <ClCompile>
@@ -188,11 +206,24 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
     </Link>
+    <CudaCompile>
+      <CodeGeneration>compute_75,sm_75</CodeGeneration>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda
+ %(AdditionalOptions)</AdditionalOptions>
+    </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\CudaEcs\CudaComponentArray.h" />
+    <ClInclude Include="Src\CudaEcs\CudaEcsSystem.h" />
+    <ClInclude Include="Src\CudaEcs\CudaEntityManager.h" />
+    <ClInclude Include="Src\CudaEcs\CudaGlobals.h" />
+    <ClInclude Include="Src\CudaEcs\CudaSparseArray.h">
+      <FileType>CppHeader</FileType>
+    </ClInclude>
     <ClInclude Include="Src\Ecs\Globals.h" />
     <ClInclude Include="Src\Ecs\CommandBuffer.h" />
     <ClInclude Include="Src\Ecs\CommandBufferExecutor.h" />

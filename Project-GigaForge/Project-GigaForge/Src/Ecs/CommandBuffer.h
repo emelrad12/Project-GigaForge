@@ -35,7 +35,6 @@ namespace GigaEntity
 
 		T& operator [](int index)
 		{
-			auto a = T();
 			return items[index];
 		}
 

@@ -42,6 +42,7 @@ void LambdaFunc(int entityIndex, int& item, ArgumentsObject arguments)
 int main()
 {
 	CudaTest();
+	return 0;
 	Timer timer(false);
 	auto manager = EntityManager();
 	manager.AddType<int>();

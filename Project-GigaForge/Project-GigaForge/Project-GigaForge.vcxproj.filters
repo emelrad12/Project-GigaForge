@@ -47,6 +47,21 @@
     <ClInclude Include="Src\Ecs\EcsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\CudaEcs\CudaGlobals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CudaEcs\CudaSparseArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CudaEcs\CudaComponentArray.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CudaEcs\CudaEcsSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CudaEcs\CudaEntityManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />

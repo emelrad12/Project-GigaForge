@@ -6,13 +6,13 @@ namespace GigaEntity
 	template <typename T>
 	struct CombinedChunk
 	{
-		CombinedChunk(int end, int chunkStart, T* data, bool* entityContains) : end(end), start(chunkStart),
+		CombinedChunk(int end, int chunkStart, T* data, bool* entityContains) : start(chunkStart), end(end),
 			data(data), entityContains(entityContains)
 		{
 		}
 
-		int end;
 		int start;
+		int end;
 		T* data;
 		bool* entityContains;
 
