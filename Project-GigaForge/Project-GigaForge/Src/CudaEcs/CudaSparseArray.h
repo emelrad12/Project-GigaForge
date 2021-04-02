@@ -15,9 +15,13 @@ namespace GigaEntity
 		{
 			AllocUnManagedArray(data, chunkCount);
 			auto tempData = new T*[chunkCount];
-			for (size_t i = 0; i < chunkCount; i++)
+			for (int i = 0; i < chunkCount; i++)
 			{
-				AllocUnManagedArray(tempData[i], chunkSize);
+				if(sparseArray.ContainsChunkForItem(i * chunkSize))
+				{
+					AllocUnManagedArray(tempData[i], chunkSize);
+					CopyToUnmanagedArray(tempData[i], sparseArray.GetChunkFastHandle(i), chunkSize);
+				}
 			}
 			CopyToUnmanagedArray(data, tempData, chunkCount);
 		}

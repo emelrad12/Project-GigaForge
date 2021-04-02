@@ -28,21 +28,12 @@ struct ArgumentsObject
 
 void LambdaFunc(int entityIndex, int& item, ArgumentsObject arguments)
 {
-	if (item > entityIndex)
-	{
-		item--;
-		arguments.buffer.AddComponent(entityIndex, static_cast<float>(item), arguments.floatHandle);
-	}
-	else
-	{
-		item++;
-	}
+	item += entityIndex;
 }
 
 int main()
 {
 	CudaTest();
-	return 0;
 	Timer timer(false);
 	auto manager = EntityManager();
 	manager.AddType<int>();
@@ -85,14 +76,13 @@ int main()
 	auto builder = system.Builder().WithEntities<int>().WithArguments(args);
 	auto sys = builder.WithFunction < CastFunction(LambdaFunc) > ();
 	sys.Run();
-	sys.Run();
 	manager.ExecuteCommands(newBuffer);
 	timer.stop("System");
 
 	for (int i = 0; i < count; i++)
 	{
 		auto val1 = array1[i];
-		if (array1[i] != i)
+		if (array1[i] != i + i)
 		{
 			throw "false";
 		}

@@ -22,7 +22,8 @@ __device__ void VoidFunc()
 void Run##name(CudaEntityManager manager, TArgumentObject argumentObject)\
 {\
 	auto arr1 = manager.GetComponentArray<E1>();\
-	auto threads = 512;\
+	auto threads = 256;\
 	auto blocks = (manager.itemCount + threads - 1) / threads;\
 	name << < blocks, threads >> > (arr1, manager.itemCount, argumentObject);\
+	checkCudaLastError;\
 }

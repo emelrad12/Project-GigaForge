@@ -23,7 +23,7 @@ namespace GigaEntity
 	public:
 		ConcurrentVector()
 		{
-			constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;//todo
+			constexpr auto count = globalCount;
 			items = new T[count];
 		}
 

@@ -16,14 +16,7 @@ __global__ void cuda_hello()
 
 __device__ void LambdaFunc(int entityIndex, int& item, int arguments)
 {
-	if (item > entityIndex)
-	{
-		item--;
-	}
-	else
-	{
-		item++;
-	}
+	item += entityIndex;
 }
 
 CreateKernelWithFunction(LambdaFunc, Kernel, int, int)
@@ -34,16 +27,14 @@ void CudaTest()
 	manager.AddType<int>();
 	auto buffer = CommandBuffer();
 	buffer.RegisterComponent<int>();
-	constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
-
 	auto& handle = buffer.GetFastAddHandle<int>();
-	for (int offset = 0; offset < count; offset += chunkSize)
+	for (int offset = 0; offset < globalCount; offset += chunkSize)
 	{
 #pragma ompLoop
 		for (int i = 0; i < chunkSize; i++)
 		{
 			const auto index = i + offset;
-			if (index < count)
+			if (index < globalCount)
 			{
 				buffer.AddComponent<int>(index, index, handle);
 			}
@@ -55,7 +46,7 @@ void CudaTest()
 	auto cudaManager = CudaEntityManager(manager);
 	cudaManager.CopyToCuda<int>();
 	
-	RunKernel(cudaManager, 0);
+	RunKernel(cudaManager, 555);
 	cudaDeviceSynchronize();
 	checkCudaLastError
 }

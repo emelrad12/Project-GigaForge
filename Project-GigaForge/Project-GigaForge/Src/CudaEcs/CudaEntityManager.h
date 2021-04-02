@@ -29,7 +29,7 @@ namespace GigaEntity
 
 		std::unordered_set<string> types = std::unordered_set<string>();
 		unordered_map<string, std::any> data = unordered_map<string, std::any>();
-		int itemCount = DEBUG ? 5000 * 100 : 5000 * 10000; //todo
+		int itemCount = globalCount; //todo
 		EntityManager entityManager;
 	};
 }
