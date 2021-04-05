@@ -11,19 +11,43 @@ namespace GigaEntity
 	public:
 		CudaSparseArray(SparseArray<T>& sparseArray) : chunkCount(sparseArray.chunkCount),
 		                                               chunkSize(sparseArray.chunkSize),
-		                                               totalSize(chunkSize * chunkCount)
+		                                               totalSize(chunkSize * chunkCount),
+		                                               sparseArray(sparseArray)
 		{
 			AllocUnManagedArray(data, chunkCount);
-			auto tempData = new T*[chunkCount];
+			dataCpu = new T*[chunkCount];
 			for (int i = 0; i < chunkCount; i++)
 			{
-				if(sparseArray.ContainsChunkForItem(i * chunkSize))
+				if (sparseArray.ContainsChunkForItem(i * chunkSize))
 				{
-					AllocUnManagedArray(tempData[i], chunkSize);
-					CopyToUnmanagedArray(tempData[i], sparseArray.GetChunkFastHandle(i), chunkSize);
+					AllocUnManagedArray(dataCpu[i], chunkSize);
+					CopyToUnmanagedArray(dataCpu[i], sparseArray.GetChunkFastHandle(i), chunkSize);
 				}
 			}
-			CopyToUnmanagedArray(data, tempData, chunkCount);
+			CopyToUnmanagedArray(data, dataCpu, chunkCount);
+		}
+
+		void Free()
+		{
+			cudaFree(data);
+			for (int i = 0; i < chunkCount; i++)
+			{
+				if (dataCpu[i] != nullptr)
+				{
+					cudaFree(dataCpu[i]);
+				}
+			}
+		}
+
+		void CopyToCpu()
+		{
+			for (int i = 0; i < chunkCount; i++)
+			{
+				if (sparseArray.ContainsChunkForItem(i * chunkSize))
+				{
+					CopyToUnmanagedArray(sparseArray.GetChunkFastHandle(i), dataCpu[i], chunkSize);
+				}
+			}
 		}
 
 		__allowDevice__ int GetChunkValidUntil(int chunkId)
@@ -60,7 +84,9 @@ namespace GigaEntity
 			return data[chunkIndex][itemIndex];
 		}
 
+		T** dataCpu;
 		T** data;
+		SparseArray<T> sparseArray;
 		const int chunkCount;
 		const int chunkSize;
 		const int totalSize;

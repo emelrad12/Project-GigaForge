@@ -16,7 +16,8 @@ __global__ void cuda_hello()
 
 __device__ void LambdaFunc(int entityIndex, int& item, int arguments)
 {
-	item += entityIndex;
+	item += arguments;
+	printf("%d\n",item);
 }
 
 CreateKernelWithFunction(LambdaFunc, Kernel, int, int)
@@ -45,8 +46,10 @@ void CudaTest()
 
 	auto cudaManager = CudaEntityManager(manager);
 	cudaManager.CopyToCuda<int>();
-	
+	RunKernel(cudaManager, 555);
+	RunKernel(cudaManager, 555);
 	RunKernel(cudaManager, 555);
 	cudaDeviceSynchronize();
 	checkCudaLastError
+	cudaManager.CopyFromCuda<int>();
 }

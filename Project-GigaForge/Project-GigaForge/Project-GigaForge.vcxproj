@@ -106,6 +106,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -133,6 +134,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -169,6 +171,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -207,6 +210,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -217,6 +221,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
+    <ClCompile Include="Src\Rendering\GameTimer.cpp" />
+    <ClCompile Include="Src\Rendering\RenderingMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaEcs\CudaComponentArray.h" />
@@ -226,6 +232,9 @@
     <ClInclude Include="Src\CudaEcs\CudaSparseArray.h">
       <FileType>CppHeader</FileType>
     </ClInclude>
+    <ClInclude Include="Src\Rendering\GameTimer.h" />
+    <ClInclude Include="Src\Rendering\RenderingGlobals.h" />
+    <ClInclude Include="Src\Rendering\RenderingMain.h" />
     <ClInclude Include="Src\Ecs\Globals.h" />
     <ClInclude Include="Src\Ecs\CommandBuffer.h" />
     <ClInclude Include="Src\Ecs\CommandBufferExecutor.h" />

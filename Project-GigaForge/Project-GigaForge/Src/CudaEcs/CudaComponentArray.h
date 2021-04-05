@@ -63,6 +63,24 @@ namespace GigaEntity
 			return returnValue;
 		}
 
+		void CopyToCpu()
+		{
+			data.CopyToCpu();
+			//Cuda is now yet allowed to change entityContains
+		}
+
+		void CopyToGpu()
+		{
+			data.CopyToGpu();
+			//Cuda is now yet allowed to change entityContains
+		}
+
+		void Free()
+		{
+			data.Free();
+			entityContains.Free();
+		}
+
 		__allowDevice__ void SetAt(CudaCombinedChunk<T> combinedChunk, int itemIndex, T& item)
 		{
 			auto newIndex = itemIndex - combinedChunk.start;

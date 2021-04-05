@@ -4,6 +4,7 @@
 #include "Src/Ecs/EcsSystem.h"
 #include "Src/Ecs/EntityManager.h"
 #include "Src/Ecs/CommandBuffer.h"
+#include "Src/Rendering/RenderingMain.h"
 using namespace GigaEntity;
 
 template <typename T>
@@ -33,6 +34,10 @@ void LambdaFunc(int entityIndex, int& item, ArgumentsObject arguments)
 
 int main()
 {
+	Rendering::Renderer r = Rendering::Renderer();
+	r.Init();
+	r.Run();
+	return 0;
 	CudaTest();
 	Timer timer(false);
 	auto manager = EntityManager();

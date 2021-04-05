@@ -17,7 +17,19 @@ namespace GigaEntity
 		{
 			auto name = typeid(T).name();
 			types.emplace(name);
+			if (data.find(name) != data.end())
+			{
+				std::any_cast<CudaComponentArray<T>>(data[name]).Free();
+			}
 			data[name] = std::any(CudaComponentArray<T>(entityManager.GetComponentArray<T>()));
+		}
+
+		template <typename T>
+		void CopyFromCuda()
+		{
+			auto name = typeid(T).name();
+			auto cudaComponentArray = std::any_cast<CudaComponentArray<T>>(data[name]);
+			cudaComponentArray.CopyToCpu();
 		}
 
 		template <typename T>
