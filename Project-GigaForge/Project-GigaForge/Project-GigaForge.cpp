@@ -36,6 +36,8 @@ int main()
 {
 	Rendering::Renderer r = Rendering::Renderer();
 	r.Init();
+	r.InitDirect3D();
+	r.OnResize();
 	r.Run();
 	return 0;
 	CudaTest();
