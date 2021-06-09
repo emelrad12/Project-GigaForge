@@ -96,7 +96,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>true</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/experimental:newLambdaProcessor %(AdditionalOptions)</AdditionalOptions>
@@ -124,7 +124,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>true</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/experimental:newLambdaProcessor %(AdditionalOptions)</AdditionalOptions>
@@ -154,7 +154,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>true</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -193,7 +193,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>true</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -222,7 +222,8 @@
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
     <ClCompile Include="Src\Rendering\GameTimer.cpp" />
-    <ClCompile Include="Src\Rendering\RenderingMain.cpp" />
+    <ClCompile Include="Src\Rendering\D3dApp.cpp" />
+    <ClCompile Include="Src\Rendering\Init3Dapp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaEcs\CudaComponentArray.h" />
@@ -233,8 +234,9 @@
       <FileType>CppHeader</FileType>
     </ClInclude>
     <ClInclude Include="Src\Rendering\GameTimer.h" />
+    <ClInclude Include="Src\Rendering\Init3DApp.h" />
     <ClInclude Include="Src\Rendering\RenderingGlobals.h" />
-    <ClInclude Include="Src\Rendering\RenderingMain.h" />
+    <ClInclude Include="Src\Rendering\D3dApp.h" />
     <ClInclude Include="Src\Ecs\Globals.h" />
     <ClInclude Include="Src\Ecs\CommandBuffer.h" />
     <ClInclude Include="Src\Ecs\CommandBufferExecutor.h" />

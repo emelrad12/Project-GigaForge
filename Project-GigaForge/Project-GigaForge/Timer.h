@@ -11,7 +11,7 @@ public:
 		begin = std::chrono::high_resolution_clock::now();
 	}
 
-	void stop(std::string name)
+	int stop(std::string name)
 	{
 		auto end = std::chrono::high_resolution_clock::now();
 		auto dur = end - begin;
@@ -25,6 +25,7 @@ public:
 			ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
 		}
 		std::cout << name << ": " << ms << std::endl;
+		return ms;
 	}
 
 	Timer(bool useMicro = false): useMicro(useMicro)

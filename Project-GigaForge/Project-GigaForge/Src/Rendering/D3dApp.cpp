@@ -2,11 +2,11 @@
 // d3dApp.cpp by Frank Luna (C) 2015 All Rights Reserved.
 //***************************************************************************************
 
-#include "d3dApp.h"
+#include "D3dApp.h"
 #include <WindowsX.h>
-
+using std::wstring;
+using std::to_wstring;
 using Microsoft::WRL::ComPtr;
-using namespace std;
 using namespace DirectX;
 
 LRESULT CALLBACK

@@ -18,10 +18,13 @@
     <ClCompile Include="Project-GigaForge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Rendering\RenderingMain.cpp">
+    <ClCompile Include="Src\Rendering\D3dApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\Rendering\GameTimer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Rendering\Init3Dapp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,13 +71,16 @@
     <ClInclude Include="Src\CudaEcs\CudaEntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Rendering\RenderingMain.h">
+    <ClInclude Include="Src\Rendering\D3dApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Rendering\RenderingGlobals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Rendering\GameTimer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Rendering\Init3DApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
