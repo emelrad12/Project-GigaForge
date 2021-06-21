@@ -6,10 +6,8 @@
 #include "Src/Ecs/EcsSystem.h"
 #include "Src/Ecs/EntityManager.h"
 #include "Src/Ecs/CommandBuffer.h"
-#include "Src/Rendering/Init3DApp.h"
-#include "Src/Rendering/RenderingGlobals.h"
 using namespace GigaEntity;
-
+void TestComp();
 template <typename T>
 void Print(T data)
 {
@@ -39,7 +37,6 @@ auto totalUnsafe = 0;
 
 void ArrTest()
 {
-	Timer t;
 	long long totalCount = 1000;
 	totalCount *= 1000;
 	totalCount *= 1000;
@@ -57,7 +54,7 @@ void ArrTest()
 			data[unitId] = 1;
 		}
 	}
-	t.start();
+	Timer t = Timer();
 	auto times = 5;
 	for (auto i = 0; i < times; i++)
 	{
@@ -73,7 +70,7 @@ void ArrTest()
 		}
 	}
 
-	auto elapsed = t.stop("test");
+	auto elapsed = t.Stop("test");
 	auto gb = 1024 * 1024 * 1024;
 	std::cout << totalCount * sizeof(long long) * (1000.0 / elapsed) / gb * times << std::endl;
 	for (auto armyId = 0; armyId < armyCount; armyId++)
@@ -84,27 +81,16 @@ void ArrTest()
 
 int main()
 {
+	TestComp();
+	return 0;
 	// ArrTest();
 	// return 0;
-	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-#if defined(DEBUG) | defined(_DEBUG)
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-#endif
-
-	try
-	{
-		InitDirect3DApp theApp(hInstance);
-		if (!theApp.Initialize())
-			return 0;
-
-		return theApp.Run();
-	}
-	catch (DxException& e)
-	{
-		MessageBox(nullptr, e.ToString().c_str(), L"HR Failed", MB_OK);
-		return 0;
-	}
-	return 0;
+// 	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
+// #if defined(DEBUG) | defined(_DEBUG)
+// 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+// #endif
+//
+// 	return 0;
 	CudaTest();
 	Timer timer(false);
 	auto manager = EntityManager();
@@ -112,8 +98,8 @@ int main()
 	manager.AddType<float>();
 	auto buffer = CommandBuffer();
 	buffer.RegisterComponent<int>();
-	constexpr auto count = DEBUG ? 5000 * 100 : 5000 * 10000;
-	timer.start();
+	constexpr auto count = globalCount;
+	timer.Start();
 	auto task1 = [&buffer]()
 	{
 		auto& handle = buffer.GetFastAddHandle<int>();
@@ -125,6 +111,7 @@ int main()
 				const auto index = i + offset;
 				if (index < count)
 				{
+					
 					buffer.AddComponent<int>(index, index, handle);
 				}
 			}
@@ -134,12 +121,12 @@ int main()
 	std::thread t1(task1);
 
 	t1.join();
-	timer.stop("Tasks");
-	timer.start();
+	timer.Stop("Tasks");
+	timer.Start();
 	manager.ExecuteCommands(buffer);
-	timer.stop("Execute");
+	timer.Stop("Execute");
 	auto array1 = manager.GetComponentArray<int>();
-	timer.start();
+	timer.Start();
 
 	auto system = EcsSystem(manager);
 	auto newBuffer = CommandBuffer();
@@ -149,7 +136,7 @@ int main()
 	auto sys = builder.WithFunction < CastFunction(LambdaFunc) >();
 	sys.Run();
 	manager.ExecuteCommands(newBuffer);
-	timer.stop("System");
+	timer.Stop("System");
 
 	for (int i = 0; i < count; i++)
 	{

@@ -14,4 +14,4 @@ const int chunkCount = 1024 * 4;
 #else
 #define DEBUG false
 #endif
-constexpr auto globalCount = DEBUG ? 50 * 1 : 5000 * 10000;
+constexpr auto globalCount = DEBUG ? 5000 * 100 : 5000 * 10000;

@@ -2,16 +2,17 @@
 #include <chrono>
 #include <string>
 #include <iostream>
+#include <utility>
 
 class Timer
 {
 public:
-	void start()
+	void Start()
 	{
 		begin = std::chrono::high_resolution_clock::now();
 	}
 
-	int stop(std::string name)
+	int Stop(std::string name)
 	{
 		auto end = std::chrono::high_resolution_clock::now();
 		auto dur = end - begin;
@@ -28,8 +29,16 @@ public:
 		return ms;
 	}
 
+	int Restart(std::string name)
+	{
+		const auto data = Stop(std::move(name));
+		Start();
+		return data;
+	}
+
 	Timer(bool useMicro = false): useMicro(useMicro)
 	{
+		Start();
 	}
 
 private:
