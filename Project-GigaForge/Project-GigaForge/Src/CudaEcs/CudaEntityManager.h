@@ -8,7 +8,7 @@ namespace GigaEntity
 	class CudaEntityManager
 	{
 	public:
-		CudaEntityManager(EntityManager entityManager) : entityManager(entityManager)
+		explicit CudaEntityManager(EntityManager entityManager) : entityManager(entityManager)
 		{
 		}
 

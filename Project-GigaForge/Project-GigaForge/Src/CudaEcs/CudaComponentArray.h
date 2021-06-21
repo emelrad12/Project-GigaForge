@@ -27,12 +27,13 @@ namespace GigaEntity
 	class CudaComponentArray
 	{
 	public:
-		CudaComponentArray(ComponentArray<T> dataToCopyFrom) : data(dataToCopyFrom.data),
-		                                                       entityContains(dataToCopyFrom.entityContains),
-		                                                       chunkCount(dataToCopyFrom.chunkCount),
-		                                                       chunkSize(dataToCopyFrom.chunkSize),
-		                                                       totalSize(chunkSize * chunkCount)
+		explicit CudaComponentArray(ComponentArray<T>& dataToCopyFrom) : data(dataToCopyFrom.data),
+		                                                                entityContains(dataToCopyFrom.entityContains),
+		                                                                chunkCount(dataToCopyFrom.chunkCount),
+		                                                                chunkSize(dataToCopyFrom.chunkSize),
+		                                                                totalSize(chunkSize * chunkCount)
 		{
+			
 		}
 
 		__allowDevice__ bool ContainsEntity(int entity)

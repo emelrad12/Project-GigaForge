@@ -21,10 +21,10 @@ namespace GigaEntity
 		}
 
 		template <typename T>
-		ComponentArray<T> GetComponentArray()
+		ComponentArray<T>& GetComponentArray()
 		{
 			auto name = typeid(T).name();
-			return std::any_cast<ComponentArray<T>>(data[name]);
+			return std::any_cast<ComponentArray<T>&>(data[name]);
 		}
 
 		void ExecuteCommands(CommandBuffer& commandBuffer)

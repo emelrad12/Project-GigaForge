@@ -75,14 +75,14 @@ void ArrTest()
 	std::cout << totalCount * sizeof(long long) * (1000.0 / elapsed) / gb * times << std::endl;
 	for (auto armyId = 0; armyId < armyCount; armyId++)
 	{
-		std::cout << armiesResults[armyId] << std::endl;
+		// std::cout << armiesResults[armyId] << std::endl;
 	}
 }
 
 int main()
 {
-	TestComp();
-	return 0;
+	// TestComp();
+	// return 0;
 	// ArrTest();
 	// return 0;
 // 	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);

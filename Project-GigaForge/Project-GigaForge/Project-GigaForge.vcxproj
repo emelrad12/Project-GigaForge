@@ -227,6 +227,7 @@
     <ClCompile Include="Project-GigaForge.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\CudaCommon\Bitset.cuh" />
     <ClInclude Include="Src\CudaEcs\CudaComponentArray.h" />
     <ClInclude Include="Src\CudaEcs\CudaEcsSystem.h" />
     <ClInclude Include="Src\CudaEcs\CudaEntityManager.h" />

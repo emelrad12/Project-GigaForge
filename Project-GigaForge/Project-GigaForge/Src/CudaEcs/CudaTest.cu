@@ -17,7 +17,7 @@ __global__ void cuda_hello()
 __device__ void LambdaFunc(int entityIndex, int& item, int arguments)
 {
 	item += arguments;
-	printf("%d\n",item);
+	// printf("%d\n",item);
 }
 
 CreateKernelWithFunction(LambdaFunc, Kernel, int, int)

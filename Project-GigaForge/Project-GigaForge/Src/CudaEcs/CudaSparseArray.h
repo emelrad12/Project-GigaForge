@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+
 #include "cuda.h"
 #include "CudaGlobals.h"
 #include "../Ecs/SparseArray.h"
@@ -9,43 +11,48 @@ namespace GigaEntity
 	class CudaSparseArray
 	{
 	public:
-		CudaSparseArray(SparseArray<T>& sparseArray) : chunkCount(sparseArray.chunkCount),
-		                                               chunkSize(sparseArray.chunkSize),
-		                                               totalSize(chunkSize * chunkCount),
-		                                               sparseArray(sparseArray)
+		explicit CudaSparseArray(SparseArray<T>& sparseArray) : data(nullptr), chunkCount(sparseArray.chunkCount),
+		                                                        chunkSize(sparseArray.chunkSize),
+		                                                        totalSize(chunkSize * chunkCount),
+		                                                        sparseArray(sparseArray)
 		{
 			AllocUnManagedArray(data, chunkCount);
-			dataCpu = new T*[chunkCount];
+			std::vector<T*> tempCpu = std::vector<T*>(chunkCount);
 			for (int i = 0; i < chunkCount; i++)
 			{
 				if (sparseArray.ContainsChunkForItem(i * chunkSize))
 				{
-					AllocUnManagedArray(dataCpu[i], chunkSize);
-					CopyToUnmanagedArray(dataCpu[i], sparseArray.GetChunkFastHandle(i), chunkSize);
+					AllocUnManagedArray(tempCpu[i], chunkSize);
+					CopyToUnmanagedArray(tempCpu[i], sparseArray.GetChunkFastHandle(i), chunkSize);
 				}
 			}
-			CopyToUnmanagedArray(data, dataCpu, chunkCount);
+			CopyToUnmanagedArray(data, tempCpu.data(), chunkCount);
 		}
 
 		void Free()
 		{
-			cudaFree(data);
+			std::vector<T*> tempCpu = std::vector<T*>(chunkCount);
+			cudaMemcpy(tempCpu.data(), data, sizeof(T*) * chunkCount, cudaMemcpyDeviceToHost);
 			for (int i = 0; i < chunkCount; i++)
 			{
-				if (dataCpu[i] != nullptr)
+				if (tempCpu[i] != nullptr)
 				{
-					cudaFree(dataCpu[i]);
+					cudaFree(tempCpu[i]);
 				}
 			}
+			cudaFree(data);
 		}
 
 		void CopyToCpu()
 		{
+			std::vector<T*> tempCpu = std::vector<T*>(chunkCount);
+			cudaMemcpy(tempCpu.data(), data, sizeof(T*) * chunkCount, cudaMemcpyDeviceToHost);
+			
 			for (int i = 0; i < chunkCount; i++)
 			{
 				if (sparseArray.ContainsChunkForItem(i * chunkSize))
 				{
-					CopyToUnmanagedArray(sparseArray.GetChunkFastHandle(i), dataCpu[i], chunkSize);
+					CopyToUnmanagedArray(sparseArray.GetChunkFastHandle(i), tempCpu[i], chunkSize);
 				}
 			}
 		}
@@ -84,9 +91,8 @@ namespace GigaEntity
 			return data[chunkIndex][itemIndex];
 		}
 
-		T** dataCpu;
 		T** data;
-		SparseArray<T> sparseArray;
+		SparseArray<T>& sparseArray;
 		const int chunkCount;
 		const int chunkSize;
 		const int totalSize;
