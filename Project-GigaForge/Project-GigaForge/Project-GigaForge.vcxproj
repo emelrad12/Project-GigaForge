@@ -112,7 +112,7 @@
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda  -Xcompiler "-openmp"
  %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
@@ -179,10 +179,12 @@
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda   -Xcompiler "-openmp"
  %(AdditionalOptions)</AdditionalOptions>
-      <InterleaveSourceInPTX>true</InterleaveSourceInPTX>
-      <GenerateLineInfo>true</GenerateLineInfo>
+      <InterleaveSourceInPTX>false</InterleaveSourceInPTX>
+      <GenerateLineInfo>false</GenerateLineInfo>
+      <FastMath>true</FastMath>
+      <ExtensibleWholeProgramCompilation>false</ExtensibleWholeProgramCompilation>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'">
@@ -219,7 +221,7 @@
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda   -Xcompiler "-openmp"
  %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
   </ItemDefinitionGroup>
@@ -227,7 +229,7 @@
     <ClCompile Include="Project-GigaForge.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Src\CudaCommon\Bitset.cuh" />
+    <ClInclude Include="Src\CudaCommon\Bitset.h" />
     <ClInclude Include="Src\CudaEcs\CudaComponentArray.h" />
     <ClInclude Include="Src\CudaEcs\CudaEcsSystem.h" />
     <ClInclude Include="Src\CudaEcs\CudaEntityManager.h" />

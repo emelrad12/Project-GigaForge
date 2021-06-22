@@ -81,10 +81,9 @@ void ArrTest()
 
 int main()
 {
-	// TestComp();
-	// return 0;
+	TestComp();
 	// ArrTest();
-	// return 0;
+	return 0;
 // 	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
 // #if defined(DEBUG) | defined(_DEBUG)
 // 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);

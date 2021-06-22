@@ -62,7 +62,7 @@
     <ClInclude Include="Src\CudaEcs\CudaEntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\CudaCommon\Bitset.cuh" />
+    <ClInclude Include="Src\CudaCommon\Bitset.h" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />

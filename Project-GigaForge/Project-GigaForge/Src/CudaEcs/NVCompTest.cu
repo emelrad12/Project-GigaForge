@@ -6,25 +6,27 @@
 #include <vector>
 #include "CudaGlobals.h"
 #include "../../Timer.h"
+#include "../CudaCommon/Bitset.h"
 #define CUDA_CHECK checkCudaError
 #define REQUIRE(x) if(!(x)){throw "Error";}else{}
 using namespace std;
 using namespace nvcomp;
-
+#define Lz4
+#undef Lz4
 void PrintMb(std::string message, float size)
 {
 	std::cout << message << ": " << size / 1024.0f / 1024 << " MB" << std::endl;
 }
 
 template <typename T>
-void test_lz4(T* input, int size, const size_t chunk_size = 1 << 16)
+void test_lz4(T* input, int uncompressedSize, const size_t chunk_size = 1 << 16)
 {
-	auto dataSize = size * sizeof(T);
-	PrintMb("Data size", dataSize);
+	auto uncompressedBytes = uncompressedSize * sizeof(T);
+	PrintMb("Data uncompressedSize", uncompressedBytes);
 	Timer t = Timer();
 	// create GPU only input buffer
 	T* d_in_data;
-	const size_t in_bytes = sizeof(T) * size;
+	const size_t in_bytes = sizeof(T) * uncompressedSize;
 	CUDA_CHECK(cudaMalloc((void**)&d_in_data, in_bytes));
 	CUDA_CHECK(cudaMemcpy(d_in_data, input, in_bytes, cudaMemcpyHostToDevice));
 	t.Restart("Copy to device");
@@ -36,7 +38,12 @@ void test_lz4(T* input, int size, const size_t chunk_size = 1 << 16)
 	void* d_comp_temp;
 	void* d_comp_out;
 
-	CascadedCompressor compressor(TypeOf<T>(), 1, 1, true);
+#ifdef Lz4
+	LZ4Compressor compressor(chunk_size);
+#else
+	CascadedCompressor compressor(TypeOf<T>());
+#endif
+
 	compressor.configure(in_bytes, &comp_temp_bytes, &comp_out_bytes);
 	REQUIRE(comp_temp_bytes > 0);
 	REQUIRE(comp_out_bytes > 0);
@@ -49,8 +56,9 @@ void test_lz4(T* input, int size, const size_t chunk_size = 1 << 16)
 
 	size_t* comp_out_bytes_ptr;
 	cudaMalloc((void**)&comp_out_bytes_ptr, sizeof(size_t));
+	CUDA_CHECK(cudaDeviceSynchronize());
+	t.Restart("Intermediate");
 	compressor.compress_async(d_in_data, in_bytes, d_comp_temp, comp_temp_bytes, d_comp_out, comp_out_bytes_ptr, stream);
-
 	CUDA_CHECK(cudaStreamSynchronize(stream));
 	auto compressTime = t.Restart("Compress");
 	CUDA_CHECK(cudaMemcpy(
@@ -60,11 +68,12 @@ void test_lz4(T* input, int size, const size_t chunk_size = 1 << 16)
 		cudaMemcpyDeviceToHost));
 	cudaFree(comp_out_bytes_ptr);
 
-	PrintMb("Out data size", comp_out_bytes);
-	std::cout << "Ratio: " << (float)dataSize / comp_out_bytes << std::endl;
-	PrintMb("CompressThoughput", (float)dataSize / (compressTime / 1000.0f));
+	PrintMb("Out data uncompressedSize", comp_out_bytes);
+	std::cout << "Ratio: " << (float)uncompressedBytes / comp_out_bytes << std::endl;
+	PrintMb("CompressThoughput", (float)uncompressedBytes / (compressTime / 1000.0f));
 	cudaFree(d_comp_temp);
 	cudaFree(d_in_data);
+	return;
 	// Test to make sure copying the compressed file is ok
 	void* copied = 0;
 	CUDA_CHECK(cudaMalloc(&copied, comp_out_bytes));
@@ -72,7 +81,11 @@ void test_lz4(T* input, int size, const size_t chunk_size = 1 << 16)
 	cudaFree(d_comp_out);
 	d_comp_out = copied;
 
+#ifdef Lz4
+	LZ4Decompressor decompressor;
+#else
 	CascadedDecompressor decompressor;
+#endif
 
 	size_t decomp_temp_bytes;
 	size_t decomp_out_bytes;
@@ -105,38 +118,39 @@ void test_lz4(T* input, int size, const size_t chunk_size = 1 << 16)
 	t.Restart("Decompress");
 
 	// Copy result back to host
-	std::vector<T> res(size);
-	cudaMemcpy(
-		&res[0], out_ptr, size * sizeof(T), cudaMemcpyDeviceToHost);
+	T* res = new T[uncompressedSize];
+	cudaMemcpy(res, out_ptr, uncompressedSize * sizeof(T), cudaMemcpyDeviceToHost);
 	t.Restart("Copy to host");
 
 	// Verify correctness
 	// REQUIRE(res == input);
+	for (size_t i = 0; i < uncompressedSize; i++)
+	{
+		REQUIRE(res[i] == input[i]);
+	}
 
 	cudaFree(d_comp_out);
 	cudaFree(out_ptr);
 	cudaFree(d_decomp_temp);
+	delete res;
 }
-
-// namespace
-
-/******************************************************************************
- * UNIT TESTS *****************************************************************
- *****************************************************************************/
 
 void TestComp()
 {
+	auto t = Timer();
 	using T = bool;
-	int size = 1 << 26;
-	auto input = new T[size];
-	std::vector<bool> a(size);
+	int size = 1 << 30;
+	auto bat = GigaEntity::Bitset(size);
+#pragma omp parallel for
 	for (int i = 0; i < size; i++)
 	{
+		auto bo = sin(i / 100) > 0;
 		auto rand = std::rand();
-		auto bo = rand > RAND_MAX - RAND_MAX / 4;
-		a[i] = bo;
-		input[i] = bo;
+		if (rand < RAND_MAX / 50) bo = true;
+		bat.unpackedData[i] = bo;
 	}
-	test_lz4(a._Myvec.data(), size / 8);
-	// test_lz4(input, size);
+	bat.Pack();
+	test_lz4(bat.packedData, bat.packedSize);
+	// test_lz4(input, unpackedSize);
+	t.Stop("total");
 }

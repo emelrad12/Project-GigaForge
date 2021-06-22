@@ -12,24 +12,21 @@ public:
 		begin = std::chrono::high_resolution_clock::now();
 	}
 
-	int Stop(std::string name)
+	float Stop(std::string name)
 	{
 		auto end = std::chrono::high_resolution_clock::now();
 		auto dur = end - begin;
-		long long ms;
-		if (useMicro)
+		float time = std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
+		if (!useMicro)
 		{
-			ms = std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
+			time /= 1000;
 		}
-		else
-		{
-			ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
-		}
-		std::cout << name << ": " << ms << std::endl;
-		return ms;
+		
+		std::cout << name << ": " << time << std::endl;
+		return time;
 	}
 
-	int Restart(std::string name)
+	float Restart(std::string name)
 	{
 		const auto data = Stop(std::move(name));
 		Start();
