@@ -1,8 +1,8 @@
 ﻿#include "nvcomp/cascaded.hpp"
 #include "nvcomp/lz4.hpp"
 #include "nvcomp.hpp"
-#include <assert.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cstdlib>
 #include <vector>
 #include "CudaGlobals.h"
 #include "../../Timer.h"

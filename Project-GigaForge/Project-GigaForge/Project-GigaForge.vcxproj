@@ -230,6 +230,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
+    <ClInclude Include="Src\CudaCommon\Block.h" />
+    <ClInclude Include="Src\CudaCommon\MemoryManager.h" />
     <ClInclude Include="Src\CudaEcs\CudaComponentArray.h" />
     <ClInclude Include="Src\CudaEcs\CudaEcsSystem.h" />
     <ClInclude Include="Src\CudaEcs\CudaEntityManager.h" />
@@ -237,6 +239,7 @@
     <ClInclude Include="Src\CudaEcs\CudaSparseArray.h">
       <FileType>CppHeader</FileType>
     </ClInclude>
+    <ClInclude Include="Src\CudaEcs\DataCompressor.cuh" />
     <ClInclude Include="Src\Ecs\Globals.h" />
     <ClInclude Include="Src\Ecs\CommandBuffer.h" />
     <ClInclude Include="Src\Ecs\CommandBufferExecutor.h" />
@@ -245,6 +248,7 @@
     <ClInclude Include="Src\Ecs\EntityManager.h" />
     <ClInclude Include="Src\Ecs\SparseArray.h" />
     <ClInclude Include="Src\Ecs\EcsSystem.h" />
+    <ClInclude Include="Tests\TestMemory.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>

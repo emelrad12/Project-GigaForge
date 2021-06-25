@@ -6,6 +6,8 @@
 #include "Src/Ecs/EcsSystem.h"
 #include "Src/Ecs/EntityManager.h"
 #include "Src/Ecs/CommandBuffer.h"
+#include "Tests/TestMemory.h"
+
 using namespace GigaEntity;
 void TestComp();
 template <typename T>
@@ -81,7 +83,8 @@ void ArrTest()
 
 int main()
 {
-	TestComp();
+	TestMemory();
+	// TestComp();
 	// ArrTest();
 	return 0;
 // 	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
