@@ -1,13 +1,17 @@
 #pragma once
-#include "../src/CudaCommon/MemoryManager.h"
+#include "../Src/CudaCommon/MemoryPool.h"
+
 inline void TestMemory()
 {
-	auto mem = MemoryManager();
-	for (size_t i = 0; i < 1024; i++)
+	auto mem = MemoryPool();
+	for (size_t i = 0; i < 512; i++)
 	{
+		auto handle = mem.GetHandle();
 		auto& block = mem.FindBlock(1024);
-		auto ptr= block.ReserveSpace(1024, i);
+		auto ptr = block.ReserveSpace(1024, handle);
 		i++;
 		i--;
 	}
+	auto& b = mem.FindBlock(1024);
+	mem.EvaporateDroplet(b);
 }

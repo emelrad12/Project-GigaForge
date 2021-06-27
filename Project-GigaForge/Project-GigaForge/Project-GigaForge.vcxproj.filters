@@ -66,11 +66,14 @@
     <ClInclude Include="Src\CudaEcs\DataCompressor.cuh">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\CudaCommon\Block.h" />
-    <ClInclude Include="Src\CudaCommon\MemoryManager.h">
+    <ClInclude Include="Src\CudaCommon\MemoryDroplet.h" />
+    <ClInclude Include="Src\CudaCommon\MemoryPool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tests\TestMemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CudaCommon\DropletHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
