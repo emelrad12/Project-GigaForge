@@ -39,6 +39,12 @@ public:
 		return firstBlock;
 	}
 
+	char* GetPointerFromMapping(DropletMapping mapping)
+	{
+		auto droplet = droplets[mapping.length];
+		return droplet.memoryLocation + mapping.offset;
+	}
+
 	DropletHandle GetHandle()
 	{
 		return DropletHandle(nextHandleId++);
@@ -48,10 +54,13 @@ public:
 	{
 		for (const auto handle : oldDroplet.callerIds)
 		{
-			auto map = handleMappings[handle];
-			auto& newDroplet = FindBlock(map.length);
-			auto newMapping = newDroplet.ReserveSpace(map.length, handle);
+			auto oldMapping = handleMappings[handle];
+			auto& newDroplet = FindBlock(oldMapping.length);
+			const auto newMapping = newDroplet.ReserveSpace(oldMapping.length, handle);
 			handleMappings[handle] = newMapping;
+			memcpy(GetPointerFromMapping(newMapping), GetPointerFromMapping(oldMapping), oldMapping.length);
 		}
+		
+		oldDroplet.Clear();
 	}
 };

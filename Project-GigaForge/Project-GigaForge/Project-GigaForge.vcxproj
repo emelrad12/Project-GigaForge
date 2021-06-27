@@ -233,6 +233,7 @@
     <ClInclude Include="Src\CudaCommon\DropletHandle.h" />
     <ClInclude Include="Src\CudaCommon\MemoryDroplet.h" />
     <ClInclude Include="Src\CudaCommon\MemoryPool.h" />
+    <ClInclude Include="Src\CudaCommon\MemStats.h" />
     <ClInclude Include="Src\CudaEcs\CudaComponentArray.h" />
     <ClInclude Include="Src\CudaEcs\CudaEcsSystem.h" />
     <ClInclude Include="Src\CudaEcs\CudaEntityManager.h" />

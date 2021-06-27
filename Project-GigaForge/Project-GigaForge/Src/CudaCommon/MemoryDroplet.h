@@ -9,26 +9,32 @@ namespace GigaEntity
 	{
 	public:
 		char* memoryLocation;
-		uint32_t nextFreeSlot;
 		int totalSize = 1024 * 1024;
-		int freedSpace = 0;
 		uint16_t id;
+		int freedSpace = 0;
+		uint32_t nextFreeSlot;
 		std::unordered_set<DropletHandle> callerIds;
 
 		MemoryDroplet()
 		{
-		
 		}
-		
+
 		MemoryDroplet(uint32_t id) : id(id)
 		{
 			memoryLocation = new char[totalSize];
 			nextFreeSlot = 0;
 		}
 
-		void Destroy()
+		bool IsPure() const
 		{
-			delete[] memoryLocation;
+			return nextFreeSlot == 0;
+		}
+
+		void Clear()
+		{
+			nextFreeSlot = 0;
+			callerIds.clear();
+			freedSpace = 0;
 		}
 
 		[[nodiscard]] long long GetRemainingSpace() const
