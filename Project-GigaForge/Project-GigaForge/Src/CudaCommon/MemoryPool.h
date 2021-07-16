@@ -4,63 +4,98 @@
 #include "MemoryDroplet.h"
 #include "queue"
 using namespace GigaEntity;
-class MemoryPool
+
+namespace GigaEntity
 {
-public:
-	MemoryPool()
+	class MemoryPool
 	{
-		auto size = 1000;
-		droplets = vector<MemoryDroplet>(size);
-		dropletQueue = std::queue<MemoryDroplet*>();
-		for (auto i = 0; i < size; i++)
+	public:
+		MemoryPool()
 		{
-			droplets[i] = MemoryDroplet(i);
-			dropletQueue.push(&droplets[i]);
+			auto size = 1000;
+			droplets = vector<MemoryDroplet>(size);
+			dropletQueue = std::queue<MemoryDroplet*>();
+			for (auto i = 0; i < size; i++)
+			{
+				droplets[i] = MemoryDroplet(i);
+				dropletQueue.push(&droplets[i]);
+			}
 		}
-	}
 
-	int chunkSize = 1024;
-	vector<MemoryDroplet> droplets;
-	std::queue<MemoryDroplet*> dropletQueue;
-	std::unordered_map<DropletHandle, DropletMapping> handleMappings;
-	std::unordered_map<uint32_t, MemoryDroplet> dropletMappings;
-	int nextHandleId;
-	
-	MemoryDroplet& FindBlock(const int size)
-	{
-		auto& firstBlock = *dropletQueue.front();
-		if (firstBlock.GetRemainingSpace() < size)
+		int chunkSize = 1024;
+		vector<MemoryDroplet> droplets;
+		std::queue<MemoryDroplet*> dropletQueue;
+		std::unordered_map<DropletHandle, DropletMapping> handleMappings;
+		int nextHandleId;
+
+		DropletHandle ReserveSpace(const int size)
 		{
-			auto& b = dropletQueue.front();
-			dropletQueue.pop();
-			dropletQueue.emplace(b);
-			return FindBlock(size);
+			auto handle = GetHandle();
+			auto& block = FindBlock(size);
+			auto mapping = block.ReserveSpace(size, handle);
+			handleMappings[handle] = mapping;
+			return handle;
 		}
-		return firstBlock;
-	}
 
-	char* GetPointerFromMapping(DropletMapping mapping)
-	{
-		auto droplet = droplets[mapping.length];
-		return droplet.memoryLocation + mapping.offset;
-	}
-
-	DropletHandle GetHandle()
-	{
-		return DropletHandle(nextHandleId++);
-	}
-
-	void EvaporateDroplet(MemoryDroplet& oldDroplet)
-	{
-		for (const auto handle : oldDroplet.callerIds)
+		MemoryDroplet& FindBlock(const int size)
 		{
-			auto oldMapping = handleMappings[handle];
-			auto& newDroplet = FindBlock(oldMapping.length);
-			const auto newMapping = newDroplet.ReserveSpace(oldMapping.length, handle);
-			handleMappings[handle] = newMapping;
-			memcpy(GetPointerFromMapping(newMapping), GetPointerFromMapping(oldMapping), oldMapping.length);
+			auto& firstBlock = *dropletQueue.front();
+			if (firstBlock.GetRemainingSpace() < size)
+			{
+				auto& b = dropletQueue.front();
+				dropletQueue.pop();
+				dropletQueue.emplace(b);
+				return FindBlock(size);
+			}
+			return firstBlock;
 		}
-		
-		oldDroplet.Clear();
-	}
-};
+
+		void ReleaseHandle(DropletHandle handle)
+		{
+			auto& mapping = GetMappingFromHandle(handle);
+			auto& droplet = droplets[mapping.dropletId];
+			droplet.FreeSpace(mapping.length, handle);
+		}
+
+		char* GetPointerFromMapping(DropletMapping mapping)
+		{
+			auto droplet = droplets[mapping.dropletId];
+			return droplet.memoryLocation + mapping.offset;
+		}
+
+		DropletMapping& GetMappingFromHandle(DropletHandle handle)
+		{
+			return handleMappings[handle];
+		}
+
+		DropletHandle GetHandle()
+		{
+			return DropletHandle(nextHandleId++);
+		}
+
+		void ConsolidateDroplets()
+		{
+			for (auto& droplet : droplets)
+			{
+				if (!droplet.IsPure() && droplet.ShouldPurge())
+				{
+					EvaporateDroplet(droplet);
+				}
+			}
+		}
+
+		void EvaporateDroplet(MemoryDroplet& oldDroplet)
+		{
+			for (const auto handle : oldDroplet.callerIds)
+			{
+				auto oldMapping = handleMappings[handle];
+				auto& newDroplet = FindBlock(oldMapping.length);
+				const auto newMapping = newDroplet.ReserveSpace(oldMapping.length, handle);
+				handleMappings[handle] = newMapping;
+				memcpy(GetPointerFromMapping(newMapping), GetPointerFromMapping(oldMapping), oldMapping.length);
+			}
+
+			oldDroplet.Clear();
+		}
+	};
+}

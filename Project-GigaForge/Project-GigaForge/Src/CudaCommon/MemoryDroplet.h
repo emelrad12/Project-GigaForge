@@ -19,7 +19,7 @@ namespace GigaEntity
 		{
 		}
 
-		MemoryDroplet(uint32_t id) : id(id)
+		explicit MemoryDroplet(uint32_t id) : id(id)
 		{
 			memoryLocation = new char[totalSize];
 			nextFreeSlot = 0;
