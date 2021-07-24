@@ -1,6 +1,6 @@
 #pragma once
 #include "MemoryDroplet.h"
-#include "MemoryPool.h"
+#include "MemoryLake.h"
 using namespace GigaEntity;
 
 namespace GigaEntity
@@ -24,7 +24,7 @@ namespace GigaEntity
 
 	struct MemoryPoolStats
 	{
-		explicit MemoryPoolStats(MemoryPool pool)
+		explicit MemoryPoolStats(MemoryLake pool)
 		{
 			const auto dropletCount = pool.droplets.size();
 			pureDroplets = dropletCount;

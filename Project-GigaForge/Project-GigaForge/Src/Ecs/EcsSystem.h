@@ -76,9 +76,9 @@ namespace GigaEntity
 			EntityManager& manager;
 		};
 
-		FunctionBuilder<tuple<>, tuple<>, reinterpret_cast<void(*)()>(VoidFunc)> Builder()
+		FunctionBuilder<tuple<>, tuple<>, VoidFunc> Builder()
 		{
-			auto builder = FunctionBuilder<tuple<>, tuple<>, reinterpret_cast<void(*)()>(VoidFunc)>(manager);
+			auto builder = FunctionBuilder<tuple<>, tuple<>, VoidFunc>(manager);
 			return builder;
 		}
 	};

@@ -1,5 +1,4 @@
 #pragma once
-#include "../Ecs/Globals.h"
 #include "DropletHandle.h"
 #include "MemoryDroplet.h"
 #include "queue"
@@ -7,17 +6,17 @@ using namespace GigaEntity;
 
 namespace GigaEntity
 {
-	class MemoryPool
+	class MemoryLake
 	{
 	public:
-		MemoryPool()
+		MemoryLake()
 		{
 			auto size = 1000;
 			droplets = vector<MemoryDroplet>(size);
 			dropletQueue = std::queue<MemoryDroplet*>();
 			for (auto i = 0; i < size; i++)
 			{
-				droplets[i] = MemoryDroplet(i);
+				droplets[i] = MemoryDroplet(i,true);
 				dropletQueue.push(&droplets[i]);
 			}
 		}
@@ -57,6 +56,11 @@ namespace GigaEntity
 			droplet.FreeSpace(mapping.length, handle);
 		}
 
+		char* GetPointerFromHandle(DropletHandle handle)
+		{
+			return GetPointerFromMapping(GetMappingFromHandle(handle));
+		}
+		
 		char* GetPointerFromMapping(DropletMapping mapping)
 		{
 			auto droplet = droplets[mapping.dropletId];

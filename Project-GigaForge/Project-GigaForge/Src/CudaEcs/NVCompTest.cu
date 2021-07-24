@@ -73,7 +73,6 @@ void test_lz4(T* input, int uncompressedSize, const size_t chunk_size = 1 << 16)
 	PrintMb("CompressThoughput", (float)uncompressedBytes / (compressTime / 1000.0f));
 	cudaFree(d_comp_temp);
 	cudaFree(d_in_data);
-	return;
 	// Test to make sure copying the compressed file is ok
 	void* copied = 0;
 	CUDA_CHECK(cudaMalloc(&copied, comp_out_bytes));
@@ -140,17 +139,17 @@ void TestComp()
 	auto t = Timer();
 	using T = bool;
 	int size = 1 << 30;
-	auto bat = GigaEntity::Bitset(size);
+	auto bitset = GigaEntity::Bitset(size);
 #pragma omp parallel for
 	for (int i = 0; i < size; i++)
 	{
 		auto bo = sin(i / 100) > 0;
 		auto rand = std::rand();
 		if (rand < RAND_MAX / 50) bo = true;
-		bat.unpackedData[i] = bo;
+		bitset.unpackedData[i] = bo;
 	}
-	bat.Pack();
-	test_lz4(bat.packedData, bat.packedSize);
+	bitset.Pack();
+	test_lz4(bitset.packedData, bitset.packedSize);
 	// test_lz4(input, unpackedSize);
 	t.Stop("total");
 }

@@ -1,15 +1,17 @@
 #pragma once
-#include "../Src/CudaCommon/MemoryPool.h"
-#include "../Src/CudaCommon/MemStats.h"
+#include "../Src/CudaCommon/FastMemoryManager/MemoryLake.h"
+#include "../Src/CudaCommon/FastMemoryManager/MemStats.h"
 using namespace GigaEntity;
 
 inline void TestMemory()
 {
-	auto mem = MemoryPool();
+	auto mem = MemoryLake();
 	auto queue = std::vector<DropletHandle>();
 	for (size_t i = 0; i < 512 * 32; i++)
 	{
-		queue.push_back(mem.ReserveSpace(1024 * 8));
+		auto handle = mem.ReserveSpace(1024 * 8);
+		queue.push_back(handle);
+		auto ptr = mem.GetPointerFromHandle(handle);
 	}
 	for (auto item : queue)
 	{

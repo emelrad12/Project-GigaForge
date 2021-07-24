@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <unordered_set>
-#include "../Ecs/Globals.h"
 #include "DropletHandle.h"
+#include "../../CudaEcs/CudaGlobals.h"
 
 namespace GigaEntity
 {
@@ -9,19 +9,28 @@ namespace GigaEntity
 	{
 	public:
 		char* memoryLocation;
-		int totalSize = 1024 * 1024;
+		uint32_t totalSize = 1024 * 1024;
 		uint16_t id;
 		int freedSpace = 0;
 		uint32_t nextFreeSlot;
 		std::unordered_set<DropletHandle> callerIds;
+		bool onDevice;
 
 		MemoryDroplet()
 		{
 		}
 
-		explicit MemoryDroplet(uint32_t id) : id(id)
+		explicit MemoryDroplet(uint32_t id, bool allocateOnDevice) : id(id)
 		{
-			memoryLocation = new char[totalSize];
+			onDevice = allocateOnDevice;
+			if (allocateOnDevice)
+			{
+				AllocUnManagedArray(memoryLocation, totalSize);
+			}
+			else
+			{
+				memoryLocation = new char[totalSize];
+			}
 			nextFreeSlot = 0;
 		}
 
@@ -37,7 +46,7 @@ namespace GigaEntity
 			freedSpace = 0;
 		}
 
-		[[nodiscard]] long long GetRemainingSpace() const
+		[[nodiscard]] uint32_t GetRemainingSpace() const
 		{
 			return totalSize - nextFreeSlot;
 		}

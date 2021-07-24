@@ -63,20 +63,23 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
-    <ClInclude Include="Src\CudaEcs\DataCompressor.cuh">
+    <ClInclude Include="Src\CudaCommon\DataCompressor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\CudaCommon\MemoryDroplet.h" />
-    <ClInclude Include="Src\CudaCommon\MemoryPool.h">
+    <ClInclude Include="Src\CudaCommon\FastMemoryManager\MemoryDroplet.h" />
+    <ClInclude Include="Src\CudaCommon\FastMemoryManager\MemoryLake.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tests\TestMemory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\CudaCommon\DropletHandle.h">
+    <ClInclude Include="Src\CudaCommon\FastMemoryManager\DropletHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\CudaCommon\MemStats.h">
+    <ClInclude Include="Src\CudaCommon\FastMemoryManager\MemStats.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\CudaCommon\FastMemoryManager\MemoryOcean.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

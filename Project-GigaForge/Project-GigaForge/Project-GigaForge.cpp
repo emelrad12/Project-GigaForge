@@ -83,17 +83,18 @@ void ArrTest()
 
 int main()
 {
-	TestMemory();
-	// TestComp();
+	// TestMemory();
+	TestComp();
 	// ArrTest();
-	return 0;
+	// return 0;
 // 	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
 // #if defined(DEBUG) | defined(_DEBUG)
 // 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 // #endif
 //
 // 	return 0;
-	CudaTest();
+	// CudaTest();
+	return 0;
 	Timer timer(false);
 	auto manager = EntityManager();
 	manager.AddType<int>();

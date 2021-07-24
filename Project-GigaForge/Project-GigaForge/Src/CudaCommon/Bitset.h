@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include "../CudaEcs/CudaGlobals.h"
 
 namespace GigaEntity
 {
