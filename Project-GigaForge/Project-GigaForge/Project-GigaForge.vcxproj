@@ -229,6 +229,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
+    <ClCompile Include="Src\RemapTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
@@ -258,6 +259,7 @@
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />
+    <CudaCompile Include="Src\CudaEcs\File.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

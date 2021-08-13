@@ -18,6 +18,9 @@
     <ClCompile Include="Project-GigaForge.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\RemapTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -86,5 +89,6 @@
   <ItemGroup>
     <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
+    <CudaCompile Include="Src\CudaEcs\File.cu" />
   </ItemGroup>
 </Project>

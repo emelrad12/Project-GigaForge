@@ -6,7 +6,7 @@
 #include <nvfunctional>
 
 using std::tuple;
-__device__ void VoidFunc()
+__device__ inline void VoidFunc()
 {
 };
 

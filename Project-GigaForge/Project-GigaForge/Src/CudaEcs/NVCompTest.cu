@@ -21,6 +21,7 @@ void PrintMb(std::string message, float size)
 template <typename T>
 void test_lz4(T* input, int uncompressedSize, const size_t chunk_size = 1 << 16)
 {
+	cudaFree(0);//Takes 250ms to initialize
 	auto uncompressedBytes = uncompressedSize * sizeof(T);
 	PrintMb("Data uncompressedSize", uncompressedBytes);
 	Timer t = Timer();
@@ -28,6 +29,7 @@ void test_lz4(T* input, int uncompressedSize, const size_t chunk_size = 1 << 16)
 	T* d_in_data;
 	const size_t in_bytes = sizeof(T) * uncompressedSize;
 	CUDA_CHECK(cudaMalloc((void**)&d_in_data, in_bytes));
+	t.Restart("Allocate on gpu");
 	CUDA_CHECK(cudaMemcpy(d_in_data, input, in_bytes, cudaMemcpyHostToDevice));
 	t.Restart("Copy to device");
 	cudaStream_t stream;
@@ -41,7 +43,7 @@ void test_lz4(T* input, int uncompressedSize, const size_t chunk_size = 1 << 16)
 #ifdef Lz4
 	LZ4Compressor compressor(chunk_size);
 #else
-	CascadedCompressor compressor(TypeOf<T>());
+	CascadedCompressor compressor(TypeOf<T>(), 1, 0, false);
 #endif
 
 	compressor.configure(in_bytes, &comp_temp_bytes, &comp_out_bytes);
@@ -104,7 +106,8 @@ void test_lz4(T* input, int uncompressedSize, const size_t chunk_size = 1 << 16)
 	// make sure the data won't match input if not written to, so we can verify
 	// correctness
 	cudaMemset(out_ptr, 0, decomp_out_bytes);
-
+	CUDA_CHECK(cudaStreamSynchronize(stream))
+	t.Restart("Before decompress");
 	decompressor.decompress_async(
 		d_comp_out,
 		comp_out_bytes,
@@ -113,8 +116,10 @@ void test_lz4(T* input, int uncompressedSize, const size_t chunk_size = 1 << 16)
 		out_ptr,
 		decomp_out_bytes,
 		stream);
-	CUDA_CHECK(cudaStreamSynchronize(stream));
-	t.Restart("Decompress");
+	CUDA_CHECK(cudaStreamSynchronize(stream))
+	auto decompressTime = t.Restart("Decompress");
+	PrintMb("DecompressThoughput", (float)uncompressedBytes / (decompressTime / 1000.0f));
+
 
 	// Copy result back to host
 	T* res = new T[uncompressedSize];
@@ -150,6 +155,6 @@ void TestComp()
 	}
 	bitset.Pack();
 	test_lz4(bitset.packedData, bitset.packedSize);
-	// test_lz4(input, unpackedSize);
+	// test_lz4(bitset.unpackedData, bitset.unpackedSize);
 	t.Stop("total");
 }
