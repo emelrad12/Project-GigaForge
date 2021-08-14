@@ -1,30 +1,5 @@
 #pragma once
-/*
- *  Copyright 2019-2021 Diligent Graphics LLC
- *  Copyright 2015-2019 Egor Yusov
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- *
- *  In no event and under no legal theory, whether in tort (including negligence),
- *  contract, or otherwise, unless required by applicable law (such as deliberate
- *  and grossly negligent acts) or agreed to in writing, shall any Contributor be
- *  liable for any damages, including any direct, indirect, special, incidental,
- *  or consequential damages of any character arising as a result of this License or
- *  out of the use or inability to use the software (including but not limited to damages
- *  for loss of goodwill, work stoppage, computer failure or malfunction, or any and
- *  all other commercial damages or losses), even if such Contributor has been advised
- *  of the possibility of such damages.
- */
+#include "RenderingGlobals.h"
 #include <memory>
 #include <iomanip>
 #include <iostream>
@@ -34,22 +9,8 @@
 #endif
 #include <Windows.h>
 #include <crtdbg.h>
-#include "RenderingTest3.h"
-
-#ifndef PLATFORM_WIN32
-#    define PLATFORM_WIN32 1
-#endif
-
-#ifndef ENGINE_DLL
-#    define ENGINE_DLL 0
-#endif
-
-#ifndef D3D12_SUPPORTED
-#    define D3D12_SUPPORTED 1
-#endif
-
+#include "RenderingTestWin32.h"
 #include "EngineFactoryD3D12.h"
-
 #include "RenderDevice.h"
 #include "DeviceContext.h"
 #include "SwapChain.h"
@@ -65,27 +26,28 @@ using namespace Diligent;
 // It will convert HLSL to GLSL in OpenGL mode, while Vulkan backend will compile it directly to SPIRV.
 
 static const char* VSSource = R"(
+cbuffer Constants
+{
+    float4x4 g_WorldViewProj;
+};
+
+struct VSInput
+{
+    float3 Pos   : ATTRIB0;
+    float4 Color : ATTRIB1;
+};
+
 struct PSInput 
 { 
     float4 Pos   : SV_POSITION; 
-    float3 Color : COLOR; 
+    float4 Color : COLOR0; 
 };
 
-void main(in  uint    VertId : SV_VertexID,
+void main(in  VSInput VSIn,
           out PSInput PSIn) 
 {
-    float4 Pos[3];
-    Pos[0] = float4(-0.5, -0.5, 0.0, 1.0);
-    Pos[1] = float4( 0.0, +0.5, 0.0, 1.0);
-    Pos[2] = float4(+0.5, -0.5, 0.0, 1.0);
-
-    float3 Col[3];
-    Col[0] = float3(1.0, 0.0, 0.0); // red
-    Col[1] = float3(0.0, 1.0, 0.0); // green
-    Col[2] = float3(0.0, 0.0, 1.0); // blue
-
-    PSIn.Pos   = Pos[VertId];
-    PSIn.Color = Col[VertId];
+    PSIn.Pos   = mul( float4(VSIn.Pos,1.0), g_WorldViewProj);
+    PSIn.Color = VSIn.Color;
 }
 )";
 
@@ -127,13 +89,8 @@ public:
         SwapChainDesc SCDesc;
         switch (m_DeviceType)
         {
-#if D3D12_SUPPORTED
         case RENDER_DEVICE_TYPE_D3D12:
-        {
-#if ENGINE_DLL
-            auto GetEngineFactoryD3D12 = LoadGraphicsEngineD3D12();
-#endif
-        		
+        {        		
             EngineD3D12CreateInfo EngineCI;
 
             auto* pFactoryD3D12 = GetEngineFactoryD3D12();
@@ -142,7 +99,6 @@ public:
             pFactoryD3D12->CreateSwapChainD3D12(m_pDevice, m_pImmediateContext, SCDesc, FullScreenModeDesc{}, Window, &m_pSwapChain);
         }
         break;
-#endif
         default:
             std::cerr << "Unknown/unsupported device type";
             return false;
@@ -161,23 +117,20 @@ public:
             pos += strlen(Key);
             if (_stricmp(pos, "D3D11") == 0)
             {
-
+                //remove
             }
             else if (_stricmp(pos, "D3D12") == 0)
             {
-#if D3D12_SUPPORTED
                 m_DeviceType = RENDER_DEVICE_TYPE_D3D12;
-#else
-                std::cerr << "Direct3D12 is not supported. Please select another device type";
-                return false;
-#endif
             }
             else if (_stricmp(pos, "GL") == 0)
             {
+                //remove
 
             }
             else if (_stricmp(pos, "VK") == 0)
             {
+                //remove
 
             }
             else
@@ -306,7 +259,7 @@ std::unique_ptr<Tutorial00App> g_pTheApp;
 
 LRESULT CALLBACK MessageProc(HWND, UINT, WPARAM, LPARAM);
 // Main
-int WINAPI WinMain2(HINSTANCE instance, int cmdShow)
+int WINAPI RenderInit(HINSTANCE instance, int cmdShow)
 {
 #if defined(_DEBUG) || defined(DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);

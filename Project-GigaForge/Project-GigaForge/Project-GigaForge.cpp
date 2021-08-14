@@ -9,8 +9,7 @@
 #include "Src/Ecs/EntityManager.h"
 #include "Src/Ecs/CommandBuffer.h"
 
-#include "Src/Rendering/RenderingTest.h"
-#include "Src/Rendering/RenderingTest3.h"
+#include "Src/Rendering/RenderingTestWin32.h"
 #include "Tests/TestMemory.h"
 
 using namespace GigaEntity;
@@ -97,7 +96,7 @@ int main()
 #if defined(DEBUG) | defined(_DEBUG)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-	WinMain2(hInstance, 1);
+	RenderInit(hInstance, 1);
 // 	return 0;
 	// CudaTest();
 	return 0;

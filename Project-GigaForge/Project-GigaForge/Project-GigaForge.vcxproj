@@ -221,11 +221,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
-    <ClCompile Include="Src\RemapTest.cpp" />
     <ClCompile Include="Src\Rendering\InputControllerWin32.cpp" />
-    <ClCompile Include="Src\Rendering\RenderingTest.cpp" />
-    <ClCompile Include="Src\Rendering\SampleApp.cpp" />
-    <ClCompile Include="Src\Rendering\SampleBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
@@ -253,11 +249,8 @@
     <ClInclude Include="Src\Rendering\InputController.h" />
     <ClInclude Include="Src\Rendering\InputControllerWin32.hpp" />
     <ClInclude Include="Src\Rendering\RenderingGlobals.h" />
-    <ClInclude Include="Src\Rendering\RenderingTest.h" />
-    <ClInclude Include="Src\Rendering\RenderingTest3.h" />
+    <ClInclude Include="Src\Rendering\RenderingTestWin32.h" />
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp" />
-    <ClInclude Include="Src\Rendering\SampleApp.h" />
-    <ClInclude Include="Src\Rendering\SampleBase.h" />
     <ClInclude Include="Tests\TestMemory.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
