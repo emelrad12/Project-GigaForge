@@ -1,11 +1,16 @@
+#define NOMINMAX true
+#define D3D12_SUPPORTED true
 #include <thread>
 #include <wrl/module.h>
-
 #include "Timer.h"
 #include "cassert"
+
 #include "Src/Ecs/EcsSystem.h"
 #include "Src/Ecs/EntityManager.h"
 #include "Src/Ecs/CommandBuffer.h"
+
+#include "Src/Rendering/RenderingTest.h"
+#include "Src/Rendering/RenderingTest3.h"
 #include "Tests/TestMemory.h"
 
 using namespace GigaEntity;
@@ -83,15 +88,16 @@ void ArrTest()
 
 int main()
 {
+	// RenderingTest();
 	// TestMemory();
-	TestComp();
+	// TestComp();
 	// ArrTest();
 	// return 0;
-// 	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
-// #if defined(DEBUG) | defined(_DEBUG)
-// 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-// #endif
-//
+	HINSTANCE hInstance = (HINSTANCE)GetModuleHandle(NULL);
+#if defined(DEBUG) | defined(_DEBUG)
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+	WinMain2(hInstance, 1);
 // 	return 0;
 	// CudaTest();
 	return 0;

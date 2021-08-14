@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="DebugRelease|x64">
-      <Configuration>DebugRelease</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="NDebug|x64">
-      <Configuration>NDebug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
@@ -97,7 +89,7 @@
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>
       </OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\nvcomp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/experimental:newLambdaProcessor  /openmp:llvm /openmp:experimental  %(AdditionalOptions)</AdditionalOptions>
@@ -108,8 +100,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
-      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;DiligentCore.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;spirv-cross-core.lib;SPIRV.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;glew-static.lib;GenericCodeGen.lib;MachineIndependent.lib;d3d11.lib;d3d12.lib;Diligent-Imgui.lib;Diligent-TextureLoader.lib;LibTiff.lib;LibPng.lib;LibJpeg.lib;ZLib.lib;GraphicsEngineD3D12_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)include\diligent\lib\DiligentTools\Debug;$(SolutionDir)include\diligent\lib\DiligentFx\Debug;$(SolutionDir)include\diligent\lib\DiligentCore\Debug;$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -158,7 +150,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\nvcomp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -175,8 +167,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
-      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;DiligentCore.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;spirv-cross-core.lib;SPIRV.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;glew-static.lib;GenericCodeGen.lib;MachineIndependent.lib;d3d11.lib;d3d12.lib;Diligent-Imgui.lib;Diligent-TextureLoader.lib;LibTiff.lib;LibPng.lib;LibJpeg.lib;ZLib.lib;GraphicsEngineD3D12_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)include\diligent\lib\DiligentTools\Release;$(SolutionDir)include\diligent\lib\DiligentFx\Release;$(SolutionDir)include\diligent\lib\DiligentCore\Release;$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -230,6 +222,10 @@
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
     <ClCompile Include="Src\RemapTest.cpp" />
+    <ClCompile Include="Src\Rendering\InputControllerWin32.cpp" />
+    <ClCompile Include="Src\Rendering\RenderingTest.cpp" />
+    <ClCompile Include="Src\Rendering\SampleApp.cpp" />
+    <ClCompile Include="Src\Rendering\SampleBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
@@ -254,6 +250,14 @@
     <ClInclude Include="Src\Ecs\EntityManager.h" />
     <ClInclude Include="Src\Ecs\SparseArray.h" />
     <ClInclude Include="Src\Ecs\EcsSystem.h" />
+    <ClInclude Include="Src\Rendering\InputController.h" />
+    <ClInclude Include="Src\Rendering\InputControllerWin32.hpp" />
+    <ClInclude Include="Src\Rendering\RenderingGlobals.h" />
+    <ClInclude Include="Src\Rendering\RenderingTest.h" />
+    <ClInclude Include="Src\Rendering\RenderingTest3.h" />
+    <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp" />
+    <ClInclude Include="Src\Rendering\SampleApp.h" />
+    <ClInclude Include="Src\Rendering\SampleBase.h" />
     <ClInclude Include="Tests\TestMemory.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
