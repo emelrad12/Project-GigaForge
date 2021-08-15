@@ -16,8 +16,4 @@ void main(in  PSInput  PSIn,
     out PSOutput PSOut)
 {
     PSOut.Color = g_Texture.Sample(g_Texture_sampler, PSIn.UV);
-    // PSOut.Color.x = 1;
-    // PSOut.Color.y = 1;
-    // PSOut.Color.z = 1;
-    // PSOut.Color.w += 1;
 }

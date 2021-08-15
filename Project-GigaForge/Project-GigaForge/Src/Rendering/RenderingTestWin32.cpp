@@ -21,14 +21,19 @@
 #include <DiligentTools/TextureLoader/interface/TextureLoader.h>
 #include <DiligentTools/TextureLoader/interface/TextureUtilities.h>
 #include <DiligentCore/Graphics/GraphicsTools/interface/GraphicsUtilities.h>
+#include <DiligentCore/Graphics/GraphicsEngine/interface/DeviceContext.h>
+#include <random>
+
+#include "TexturedMesh.h"
 using namespace Diligent;
+
+auto m_GridSize = 50;
 
 struct Vertex
 {
 	float3 pos;
 	float2 uv;
 };
-
 
 class Tutorial00App
 {
@@ -47,10 +52,15 @@ public:
 	RefCntAutoPtr<IBuffer> m_CubeVertexBuffer;
 	RefCntAutoPtr<IBuffer> m_CubeIndexBuffer;
 	RefCntAutoPtr<IBuffer> m_VSConstants;
-	float4x4 m_WorldViewProjMatrix;
 	RefCntAutoPtr<ITextureView> m_TextureSRV;
 	RefCntAutoPtr<IShaderResourceBinding> m_SRB;
-
+	RefCntAutoPtr<IBuffer> m_InstanceBuffer;
+	int                  m_GridSize = 32;
+	static constexpr int MaxGridSize = 32;
+	static constexpr int MaxInstances = MaxGridSize * MaxGridSize * MaxGridSize;
+	float4x4             m_ViewProjMatrix;
+	float4x4             m_RotationMatrix;
+	
 	bool InitializeDiligentEngine(HWND hWnd)
 	{
 		SwapChainDesc SCDesc;
@@ -100,203 +110,123 @@ public:
 	}
 
 
-	void CreateResources()
+	void CreatePipelineState()
 	{
-		// Pipeline state object encompasses configuration of all GPU stages
+		auto textuedMesh = TexturedMesh();
 
-		GraphicsPipelineStateCreateInfo PSOCreateInfo;
-
-		// Pipeline state name is used by the engine to report issues.
-		// It is always a good idea to give objects descriptive names.
-		PSOCreateInfo.PSODesc.Name = "Cube PSO";
-
-		// This is a graphics pipeline
-		PSOCreateInfo.PSODesc.PipelineType = PIPELINE_TYPE_GRAPHICS;
-
+		CreateInstanceBuffer();
 		// clang-format off
-		// This tutorial will render to a single render target
-		PSOCreateInfo.GraphicsPipeline.NumRenderTargets = 1;
-		// Set render target format which is the format of the swap chain's color buffer
-		PSOCreateInfo.GraphicsPipeline.RTVFormats[0] = m_pSwapChain->GetDesc().ColorBufferFormat;
-		// Use the depth buffer format from the swap chain
-		PSOCreateInfo.GraphicsPipeline.DSVFormat = m_pSwapChain->GetDesc().DepthBufferFormat;
-		// Primitive topology defines what kind of primitives will be rendered by this pipeline state
-		PSOCreateInfo.GraphicsPipeline.PrimitiveTopology = PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
-
-		PSOCreateInfo.GraphicsPipeline.RasterizerDesc.CullMode = CULL_MODE_BACK;
-
-		PSOCreateInfo.GraphicsPipeline.DepthStencilDesc.DepthEnable = true;
-
-
-		ShaderCreateInfo ShaderCI;
-		ShaderCI.SourceLanguage = SHADER_SOURCE_LANGUAGE_HLSL;
-		// OpenGL backend requires emulated combined HLSL texture samplers (g_Texture + g_Texture_sampler combination)
-		ShaderCI.UseCombinedTextureSamplers = true;
-		RefCntAutoPtr<IShaderSourceInputStreamFactory> pShaderSourceFactory;
-		const auto* SearchDirectories = R"(C:\Users\emelrad12\Documents\GitHub\Project-GigaForge\Project-GigaForge\Project-GigaForge\Src\Rendering\Shaders\)";
-		m_pEngineFactory->CreateDefaultShaderSourceStreamFactory(SearchDirectories, &pShaderSourceFactory);
-		ShaderCI.pShaderSourceStreamFactory = pShaderSourceFactory;
-
-		RefCntAutoPtr<IShader> pVS;
-		{
-			ShaderCI.Desc.ShaderType = SHADER_TYPE_VERTEX;
-			ShaderCI.EntryPoint = "main";
-			ShaderCI.Desc.Name = "Cube VS";
-			ShaderCI.FilePath = "Vertex.hlsl";
-			m_pDevice->CreateShader(ShaderCI, &pVS);
-			CreateUniformBuffer(m_pDevice, sizeof(float4x4), "VS constants CB", &m_VSConstants);
-		}
-
-		// Create a pixel shader
-		RefCntAutoPtr<IShader> pPS;
-		{
-			ShaderCI.Desc.ShaderType = SHADER_TYPE_PIXEL;
-			ShaderCI.EntryPoint = "main";
-			ShaderCI.Desc.Name = "Cube PS";
-			ShaderCI.FilePath = "Pixel.hlsl";
-			m_pDevice->CreateShader(ShaderCI, &pPS);
-		}
-
+		// Define vertex shader input layout
+		// This tutorial uses two types of input: per-vertex data and per-instance data.
 		LayoutElement LayoutElems[] =
 		{
+			// Per-vertex data - first buffer slot
 			// Attribute 0 - vertex position
 			LayoutElement{0, 0, 3, VT_FLOAT32, False},
-			// Attribute 1 - vertex color
-			LayoutElement{1, 0, 2, VT_FLOAT32, False}
+			// Attribute 1 - texture coordinates
+			LayoutElement{1, 0, 2, VT_FLOAT32, False},
+
+			// Per-instance data - second buffer slot
+			// We will use four attributes to encode instance-specific 4x4 transformation matrix
+			// Attribute 2 - first row
+			LayoutElement{2, 1, 4, VT_FLOAT32, False, INPUT_ELEMENT_FREQUENCY_PER_INSTANCE},
+			// Attribute 3 - second row
+			LayoutElement{3, 1, 4, VT_FLOAT32, False, INPUT_ELEMENT_FREQUENCY_PER_INSTANCE},
+			// Attribute 4 - third row
+			LayoutElement{4, 1, 4, VT_FLOAT32, False, INPUT_ELEMENT_FREQUENCY_PER_INSTANCE},
+			// Attribute 5 - fourth row
+			LayoutElement{5, 1, 4, VT_FLOAT32, False, INPUT_ELEMENT_FREQUENCY_PER_INSTANCE}
 		};
+		// clang-format on
 
+		// Create a shader source stream factory to load shaders from files.
+		RefCntAutoPtr<IShaderSourceInputStreamFactory> pShaderSourceFactory;
+		m_pEngineFactory->CreateDefaultShaderSourceStreamFactory("Shaders", &pShaderSourceFactory);
 
-		// Finally, create the pipeline state
-		PSOCreateInfo.pVS = pVS;
-		PSOCreateInfo.pPS = pPS;
+		TexturedMesh::CreatePSOInfo CubePsoCI;
+		CubePsoCI.pDevice = m_pDevice;
+		CubePsoCI.RTVFormat = m_pSwapChain->GetDesc().ColorBufferFormat;
+		CubePsoCI.DSVFormat = m_pSwapChain->GetDesc().DepthBufferFormat;
+		CubePsoCI.pShaderSourceFactory = pShaderSourceFactory;
+		CubePsoCI.VSFilePath = "Vertex.hlsl";
+		CubePsoCI.PSFilePath = "Pixel.hlsl";
+		CubePsoCI.ExtraLayoutElements = LayoutElems;
+		CubePsoCI.NumExtraLayoutElements = _countof(LayoutElems);
 
-		PSOCreateInfo.GraphicsPipeline.InputLayout.LayoutElements = LayoutElems;
-		PSOCreateInfo.GraphicsPipeline.InputLayout.NumElements = _countof(LayoutElems);
-		PSOCreateInfo.PSODesc.ResourceLayout.DefaultVariableType = SHADER_RESOURCE_VARIABLE_TYPE_STATIC;
+		m_pPSO = textuedMesh.CreatePipelineState(CubePsoCI);
 
-		ShaderResourceVariableDesc Vars[] =
-		{
-			{SHADER_TYPE_PIXEL, "g_Texture", SHADER_RESOURCE_VARIABLE_TYPE_MUTABLE}
-		};
+		// Create dynamic uniform buffer that will store our transformation matrix
+		// Dynamic buffers can be frequently updated by the CPU
+		CreateUniformBuffer(m_pDevice, sizeof(float4x4) * 2, "VS constants CB", &m_VSConstants);
 
-		PSOCreateInfo.PSODesc.ResourceLayout.Variables = Vars;
-		PSOCreateInfo.PSODesc.ResourceLayout.NumVariables = _countof(Vars);
-
-		SamplerDesc SamLinearClampDesc
-		{
-			FILTER_TYPE_LINEAR, FILTER_TYPE_LINEAR, FILTER_TYPE_LINEAR,
-			TEXTURE_ADDRESS_CLAMP, TEXTURE_ADDRESS_CLAMP, TEXTURE_ADDRESS_CLAMP
-		};
-
-		ImmutableSamplerDesc ImtblSamplers[] =
-		{
-			{SHADER_TYPE_PIXEL, "g_Texture", SamLinearClampDesc}
-		};
-
-		PSOCreateInfo.PSODesc.ResourceLayout.ImmutableSamplers = ImtblSamplers;
-		PSOCreateInfo.PSODesc.ResourceLayout.NumImmutableSamplers = _countof(ImtblSamplers);
-
-
-		m_pDevice->CreateGraphicsPipelineState(PSOCreateInfo, &m_pPSO);
+		// Since we did not explcitly specify the type for 'Constants' variable, default
+		// type (SHADER_RESOURCE_VARIABLE_TYPE_STATIC) will be used. Static variables
+		// never change and are bound directly to the pipeline state object.
 		m_pPSO->GetStaticVariableByName(SHADER_TYPE_VERTEX, "Constants")->Set(m_VSConstants);
-		m_pPSO->CreateShaderResourceBinding(&m_SRB, true);
-	}
 
-	void LoadTexture()
-	{
-		TextureLoadInfo loadInfo;
-		loadInfo.IsSRGB = true;
-		RefCntAutoPtr<ITexture> Tex;
-		CreateTextureFromFile("DGLogo.png", loadInfo, m_pDevice, &Tex);
-		m_TextureSRV = Tex->GetDefaultView(TEXTURE_VIEW_SHADER_RESOURCE);
+		// Since we are using mutable variable, we must create a shader resource binding object
+		// http://diligentgraphics.com/2016/03/23/resource-binding-model-in-diligent-engine-2-0/
+		m_pPSO->CreateShaderResourceBinding(&m_SRB, true);
+
+		m_CubeVertexBuffer = textuedMesh.CreateVertexBuffer(m_pDevice, TexturedMesh::VERTEX_COMPONENT_FLAG_POS_UV);
+		m_CubeIndexBuffer = textuedMesh.CreateIndexBuffer(m_pDevice);
+		m_TextureSRV = textuedMesh.LoadTexture(m_pDevice, "DGLogo.png")->GetDefaultView(TEXTURE_VIEW_SHADER_RESOURCE);
+		// Set cube texture SRV in the SRB
 		m_SRB->GetVariableByName(SHADER_TYPE_PIXEL, "g_Texture")->Set(m_TextureSRV);
 	}
 
-	void CreateVertexBuffer()
+	void CreateInstanceBuffer()
 	{
-		// Cube vertices
-
-		//      (-1,+1,+1)________________(+1,+1,+1)
-		//               /|              /|
-		//              / |             / |
-		//             /  |            /  |
-		//            /   |           /   |
-		//(-1,-1,+1) /____|__________/(+1,-1,+1)
-		//           |    |__________|____|
-		//           |   /(-1,+1,-1) |    /(+1,+1,-1)
-		//           |  /            |   /
-		//           | /             |  /
-		//           |/              | /
-		//           /_______________|/
-		//        (-1,-1,-1)       (+1,-1,-1)
-		//
-		
-		Vertex CubeVerts[] =
-		{
-			{float3(-1,-1,-1), float2(0,1)},
-			{float3(-1,+1,-1), float2(0,0)},
-			{float3(+1,+1,-1), float2(1,0)},
-			{float3(+1,-1,-1), float2(1,1)},
-			
-			{float3(-1,-1,-1), float2(0,1)},
-			{float3(-1,-1,+1), float2(0,0)},
-			{float3(+1,-1,+1), float2(1,0)},
-			{float3(+1,-1,-1), float2(1,1)},
-			
-			{float3(+1,-1,-1), float2(0,1)},
-			{float3(+1,-1,+1), float2(1,1)},
-			{float3(+1,+1,+1), float2(1,0)},
-			{float3(+1,+1,-1), float2(0,0)},
-			
-			{float3(+1,+1,-1), float2(0,1)},
-			{float3(+1,+1,+1), float2(0,0)},
-			{float3(-1,+1,+1), float2(1,0)},
-			{float3(-1,+1,-1), float2(1,1)},
-			
-			{float3(-1,+1,-1), float2(1,0)},
-			{float3(-1,+1,+1), float2(0,0)},
-			{float3(-1,-1,+1), float2(0,1)},
-			{float3(-1,-1,-1), float2(1,1)},
-			
-			{float3(-1,-1,+1), float2(1,1)},
-			{float3(+1,-1,+1), float2(0,1)},
-			{float3(+1,+1,+1), float2(0,0)},
-			{float3(-1,+1,+1), float2(1,0)}
-		};
-
-
-		BufferDesc VertBuffDesc;
-		VertBuffDesc.Name = "Cube vertex buffer";
-		VertBuffDesc.Usage = USAGE_IMMUTABLE;
-		VertBuffDesc.BindFlags = BIND_VERTEX_BUFFER;
-		VertBuffDesc.uiSizeInBytes = sizeof(CubeVerts);
-		BufferData VBData;
-		VBData.pData = CubeVerts;
-		VBData.DataSize = sizeof(CubeVerts);
-		m_pDevice->CreateBuffer(VertBuffDesc, &VBData, &m_CubeVertexBuffer);
+		// Create instance data buffer that will store transformation matrices
+		BufferDesc InstBuffDesc;
+		InstBuffDesc.Name = "Instance data buffer";
+		// Use default usage as this buffer will only be updated when grid size changes
+		InstBuffDesc.Usage = USAGE_DEFAULT;
+		InstBuffDesc.BindFlags = BIND_VERTEX_BUFFER;
+		InstBuffDesc.uiSizeInBytes = sizeof(float4x4) * MaxInstances;
+		m_pDevice->CreateBuffer(InstBuffDesc, nullptr, &m_InstanceBuffer);
+		PopulateInstanceBuffer();
 	}
 
-	void CreateIndexBuffer()
+	void PopulateInstanceBuffer()
 	{
-		Uint32 Indices[] =
-		{
-			2, 0, 1, 2, 3, 0,
-			4, 6, 5, 4, 7, 6,
-			8, 10, 9, 8, 11, 10,
-			12, 14, 13, 12, 15, 14,
-			16, 18, 17, 16, 19, 18,
-			20, 21, 22, 20, 22, 23
-		};
+		// Populate instance data buffer
+		std::vector<float4x4> InstanceData(m_GridSize * m_GridSize * m_GridSize);
 
-		BufferDesc IndBuffDesc;
-		IndBuffDesc.Name = "Cube index buffer";
-		IndBuffDesc.Usage = USAGE_IMMUTABLE;
-		IndBuffDesc.BindFlags = BIND_INDEX_BUFFER;
-		IndBuffDesc.uiSizeInBytes = sizeof(Indices);
-		BufferData IBData;
-		IBData.pData = Indices;
-		IBData.DataSize = sizeof(Indices);
-		m_pDevice->CreateBuffer(IndBuffDesc, &IBData, &m_CubeIndexBuffer);
+		float fGridSize = static_cast<float>(m_GridSize);
+
+		std::mt19937 gen; // Standard mersenne_twister_engine. Use default seed
+		// to generate consistent distribution.
+
+		std::uniform_real_distribution<float> scale_distr(0.3f, 1.0f);
+		std::uniform_real_distribution<float> offset_distr(-0.15f, +0.15f);
+		std::uniform_real_distribution<float> rot_distr(-PI_F, +PI_F);
+
+		float BaseScale = 0.6f / fGridSize;
+		int instId = 0;
+		for (int x = 0; x < m_GridSize; ++x)
+		{
+			for (int y = 0; y < m_GridSize; ++y)
+			{
+				for (int z = 0; z < m_GridSize; ++z)
+				{
+					// Add random offset from central position in the grid
+					float xOffset = 2.f * (x + 0.5f + offset_distr(gen)) / fGridSize - 1.f;
+					float yOffset = 2.f * (y + 0.5f + offset_distr(gen)) / fGridSize - 1.f;
+					float zOffset = 2.f * (z + 0.5f + offset_distr(gen)) / fGridSize - 1.f;
+					// Random scale
+					float scale = BaseScale * scale_distr(gen);
+					// Random rotation
+					float4x4 rotation = float4x4::RotationX(rot_distr(gen)) * float4x4::RotationY(rot_distr(gen)) * float4x4::RotationZ(rot_distr(gen));
+					// Combine rotation, scale and translation
+					float4x4 matrix = rotation * float4x4::Scale(scale, scale, scale) * float4x4::Translation(xOffset, yOffset, zOffset);
+					InstanceData[instId++] = matrix;
+				}
+			}
+		}
+		// Update instance data buffer
+		Uint32 DataSize = static_cast<Uint32>(sizeof(InstanceData[0]) * InstanceData.size());
+		m_pImmediateContext->UpdateBuffer(m_InstanceBuffer, 0, DataSize, InstanceData.data(), RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
 	}
 
 	void Render()
@@ -312,21 +242,26 @@ public:
 		{
 			// Map the buffer and write current world-view-projection matrix
 			MapHelper<float4x4> CBConstants(m_pImmediateContext, m_VSConstants, MAP_WRITE, MAP_FLAG_DISCARD);
-			*CBConstants = m_WorldViewProjMatrix.Transpose();
+			CBConstants[0] = m_ViewProjMatrix.Transpose();
+			CBConstants[1] = m_RotationMatrix.Transpose();
 		}
 
-		Uint32 offset = 0;
-		IBuffer* pBuffs[] = {m_CubeVertexBuffer};
-		m_pImmediateContext->SetVertexBuffers(0, 1, pBuffs, &offset, RESOURCE_STATE_TRANSITION_MODE_TRANSITION, SET_VERTEX_BUFFERS_FLAG_RESET);
+		Uint32   offsets[] = { 0, 0 };
+		IBuffer* pBuffs[] = { m_CubeVertexBuffer, m_InstanceBuffer };
+		m_pImmediateContext->SetVertexBuffers(0, _countof(pBuffs), pBuffs, offsets, RESOURCE_STATE_TRANSITION_MODE_TRANSITION, SET_VERTEX_BUFFERS_FLAG_RESET);
 		m_pImmediateContext->SetIndexBuffer(m_CubeIndexBuffer, 0, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
-		
+
+		// Set the pipeline state
 		m_pImmediateContext->SetPipelineState(m_pPSO);
+		// Commit shader resources. RESOURCE_STATE_TRANSITION_MODE_TRANSITION mode
+		// makes sure that resources are transitioned to required states.
 		m_pImmediateContext->CommitShaderResources(m_SRB, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
 
-		DrawIndexedAttribs DrawAttrs;
-		DrawAttrs.IndexType = VT_UINT32;
+		DrawIndexedAttribs DrawAttrs;       // This is an indexed draw call
+		DrawAttrs.IndexType = VT_UINT32; // Index type
 		DrawAttrs.NumIndices = 36;
-
+		DrawAttrs.NumInstances = m_GridSize * m_GridSize * m_GridSize; // The number of instances
+		// Verify the state of vertex and index buffers
 		DrawAttrs.Flags = DRAW_FLAG_VERIFY_ALL;
 		m_pImmediateContext->DrawIndexed(DrawAttrs);
 	}
@@ -361,7 +296,11 @@ public:
 		auto Proj = GetAdjustedProjectionMatrix(PI_F / 4.0f, 0.1f, 100.f);
 
 		// Compute world-view-projection matrix
-		m_WorldViewProjMatrix = CubeModelTransform * View * SrfPreTransform * Proj;
+		m_ViewProjMatrix = View * SrfPreTransform * Proj;
+
+		// Global rotation matrix
+		m_RotationMatrix = float4x4::RotationY(static_cast<float>(CurrTime) * 1.0f) * float4x4::RotationX(-static_cast<float>(CurrTime) * 0.25f);
+		PopulateInstanceBuffer();
 	}
 
 	float4x4 GetSurfacePretransformMatrix(const float3& f3CameraViewAxis) const
@@ -479,10 +418,9 @@ int WINAPI RenderInit(HINSTANCE instance, int cmdShow)
 	if (!g_pTheApp->InitializeDiligentEngine(wnd))
 		return -1;
 
-	g_pTheApp->CreateResources();
-	g_pTheApp->CreateVertexBuffer();
-	g_pTheApp->CreateIndexBuffer();
-	g_pTheApp->LoadTexture();
+	g_pTheApp->CreatePipelineState();
+
+	
 
 	// Main message loop
 	MSG msg = {0};

@@ -230,6 +230,7 @@
   <ItemGroup>
     <ClCompile Include="Project-GigaForge.cpp" />
     <ClCompile Include="Src\Rendering\InputControllerWin32.cpp" />
+    <ClCompile Include="Src\Rendering\TexturedMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
@@ -261,6 +262,7 @@
     <ClInclude Include="Src\Rendering\RenderingTestWin32.h" />
     <ClCompile Include="Src\Rendering\RenderBase.cpp" />
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp" />
+    <ClInclude Include="Src\Rendering\TexturedMesh.h" />
     <ClInclude Include="Tests\TestMemory.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>
@@ -270,15 +272,7 @@
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Src\Rendering\Shaders\Pixel.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Src\Rendering\Shaders\Vertex.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    <FxCompile Include="Shaders\Pixel.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
