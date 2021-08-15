@@ -66,6 +66,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)include;</IncludePath>
+    <MultiProcFXC>true</MultiProcFXC>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='NDebug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -74,6 +75,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)include;</IncludePath>
+    <MultiProcFXC>true</MultiProcFXC>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -109,6 +111,9 @@
       <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda  -Xcompiler "-openmp"
  %(AdditionalOptions)</AdditionalOptions>
     </CudaCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='NDebug|x64'">
     <ClCompile>
@@ -180,6 +185,9 @@
       <FastMath>true</FastMath>
       <ExtensibleWholeProgramCompilation>false</ExtensibleWholeProgramCompilation>
     </CudaCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'">
     <ClCompile>
@@ -248,8 +256,10 @@
     <ClInclude Include="Src\Ecs\EcsSystem.h" />
     <ClInclude Include="Src\Rendering\InputController.h" />
     <ClInclude Include="Src\Rendering\InputControllerWin32.hpp" />
+    <ClInclude Include="Src\Rendering\RenderBase.h" />
     <ClInclude Include="Src\Rendering\RenderingGlobals.h" />
     <ClInclude Include="Src\Rendering\RenderingTestWin32.h" />
+    <ClCompile Include="Src\Rendering\RenderBase.cpp" />
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp" />
     <ClInclude Include="Tests\TestMemory.h" />
     <ClInclude Include="Timer.h" />
@@ -258,6 +268,20 @@
     <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />
     <CudaCompile Include="Src\CudaEcs\File.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Rendering\Shaders\Pixel.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Src\Rendering\Shaders\Vertex.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

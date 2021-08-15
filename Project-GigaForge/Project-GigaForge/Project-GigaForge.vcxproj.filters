@@ -24,6 +24,9 @@
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Rendering\RenderBase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -100,10 +103,17 @@
     <ClInclude Include="Src\Rendering\RenderingTestWin32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Rendering\RenderBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
     <CudaCompile Include="Src\CudaEcs\File.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Src\Rendering\Shaders\Pixel.hlsl" />
+    <FxCompile Include="Src\Rendering\Shaders\Vertex.hlsl" />
   </ItemGroup>
 </Project>
