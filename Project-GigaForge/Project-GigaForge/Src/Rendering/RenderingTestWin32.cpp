@@ -25,6 +25,8 @@
 #include <random>
 
 #include "TexturedMesh.h"
+
+// import TexturedMesh;
 using namespace Diligent;
 
 auto m_GridSize = 50;
@@ -198,9 +200,9 @@ public:
 		std::mt19937 gen; // Standard mersenne_twister_engine. Use default seed
 		// to generate consistent distribution.
 
-		std::uniform_real_distribution<float> scale_distr(0.3f, 1.0f);
-		std::uniform_real_distribution<float> offset_distr(-0.15f, +0.15f);
-		std::uniform_real_distribution<float> rot_distr(-PI_F, +PI_F);
+		std::uniform_real_distribution scale_distr(0.3f, 1.0f);
+		std::uniform_real_distribution offset_distr(-0.15f, +0.15f);
+		std::uniform_real_distribution rot_distr(-PI_F, +PI_F);
 
 		float BaseScale = 0.6f / fGridSize;
 		int instId = 0;

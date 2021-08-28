@@ -231,6 +231,7 @@
     <ClCompile Include="Project-GigaForge.cpp" />
     <ClCompile Include="Src\Rendering\InputControllerWin32.cpp" />
     <ClCompile Include="Src\Rendering\TexturedMesh.cpp" />
+    <ClCompile Include="Src\Rendering\TexturedMesh.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
@@ -257,12 +258,11 @@
     <ClInclude Include="Src\Ecs\EcsSystem.h" />
     <ClInclude Include="Src\Rendering\InputController.h" />
     <ClInclude Include="Src\Rendering\InputControllerWin32.hpp" />
-    <ClInclude Include="Src\Rendering\RenderBase.h" />
     <ClInclude Include="Src\Rendering\RenderingGlobals.h" />
     <ClInclude Include="Src\Rendering\RenderingTestWin32.h" />
-    <ClCompile Include="Src\Rendering\RenderBase.cpp" />
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp" />
     <ClInclude Include="Src\Rendering\TexturedMesh.h" />
+    <ClInclude Include="Src\Rendering\TexturedMeshRenderer.h" />
     <ClInclude Include="Tests\TestMemory.h" />
     <ClInclude Include="Timer.h" />
   </ItemGroup>

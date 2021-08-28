@@ -24,7 +24,7 @@
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Rendering\RenderBase.cpp">
+    <ClCompile Include="Src\Rendering\TexturedMesh.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Src\Rendering\TexturedMesh.cpp">
@@ -106,7 +106,7 @@
     <ClInclude Include="Src\Rendering\RenderingTestWin32.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Rendering\RenderBase.h">
+    <ClInclude Include="Src\Rendering\TexturedMeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Rendering\TexturedMesh.h">
