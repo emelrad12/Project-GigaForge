@@ -2,6 +2,7 @@
 #include "DropletHandle.h"
 #include "MemoryDroplet.h"
 #include "queue"
+#include "../Src/Ecs/EcsGlobals.h"
 using namespace GigaEntity;
 
 namespace GigaEntity

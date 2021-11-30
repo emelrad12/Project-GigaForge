@@ -24,11 +24,20 @@
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="Src\Rendering\TexturedMesh.ixx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Src\Rendering\TexturedMesh.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\MesherTest.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\RenderTest.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\TestEcs.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\TestMemory.cpp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +62,7 @@
     <ClInclude Include="Src\Ecs\EntityManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Src\Ecs\Globals.h">
+    <ClInclude Include="Src\Ecs\EcsGlobals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Ecs\EcsSystem.h">
@@ -75,14 +84,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
-    <ClInclude Include="Src\CudaCommon\DataCompressor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Src\CudaCommon\FastMemoryManager\MemoryDroplet.h" />
     <ClInclude Include="Src\CudaCommon\FastMemoryManager\MemoryLake.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tests\TestMemory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\CudaCommon\FastMemoryManager\DropletHandle.h">
@@ -112,13 +115,28 @@
     <ClInclude Include="Src\Rendering\TexturedMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game\GameMain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\OptixMesh\Mesher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />
+    <CudaCompile Include="Tests\CudaTest.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
     <CudaCompile Include="Src\CudaEcs\File.cu" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\Pixel.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

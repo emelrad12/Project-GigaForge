@@ -23,7 +23,7 @@
 #include <DiligentCore/Graphics/GraphicsTools/interface/GraphicsUtilities.h>
 #include <DiligentCore/Graphics/GraphicsEngine/interface/DeviceContext.h>
 #include <random>
-
+#include <winerror.h>
 #include "TexturedMesh.h"
 
 // import TexturedMesh;
@@ -50,19 +50,19 @@ public:
 	}
 
 	RefCntAutoPtr<IEngineFactoryD3D12> m_pEngineFactory;
-	RefCntAutoPtr<IPipelineState> m_pPSO;
+	RefCntAutoPtr<IPipelineState> texturedMeshPipelineState;
 	RefCntAutoPtr<IBuffer> m_CubeVertexBuffer;
 	RefCntAutoPtr<IBuffer> m_CubeIndexBuffer;
 	RefCntAutoPtr<IBuffer> m_VSConstants;
 	RefCntAutoPtr<ITextureView> m_TextureSRV;
 	RefCntAutoPtr<IShaderResourceBinding> m_SRB;
 	RefCntAutoPtr<IBuffer> m_InstanceBuffer;
-	int                  m_GridSize = 32;
+	int m_GridSize = 32;
 	static constexpr int MaxGridSize = 32;
 	static constexpr int MaxInstances = MaxGridSize * MaxGridSize * MaxGridSize;
-	float4x4             m_ViewProjMatrix;
-	float4x4             m_RotationMatrix;
-	
+	float4x4 m_ViewProjMatrix;
+	float4x4 m_RotationMatrix;
+
 	bool InitializeDiligentEngine(HWND hWnd)
 	{
 		SwapChainDesc SCDesc;
@@ -114,7 +114,7 @@ public:
 
 	void CreatePipelineState()
 	{
-		auto textuedMesh = TexturedMesh();
+		auto texturedMesh = TexturedMesh();
 
 		CreateInstanceBuffer();
 		// clang-format off
@@ -155,7 +155,7 @@ public:
 		CubePsoCI.ExtraLayoutElements = LayoutElems;
 		CubePsoCI.NumExtraLayoutElements = _countof(LayoutElems);
 
-		m_pPSO = textuedMesh.CreatePipelineState(CubePsoCI);
+		texturedMeshPipelineState = texturedMesh.CreatePipelineState(CubePsoCI);
 
 		// Create dynamic uniform buffer that will store our transformation matrix
 		// Dynamic buffers can be frequently updated by the CPU
@@ -164,15 +164,15 @@ public:
 		// Since we did not explcitly specify the type for 'Constants' variable, default
 		// type (SHADER_RESOURCE_VARIABLE_TYPE_STATIC) will be used. Static variables
 		// never change and are bound directly to the pipeline state object.
-		m_pPSO->GetStaticVariableByName(SHADER_TYPE_VERTEX, "Constants")->Set(m_VSConstants);
+		texturedMeshPipelineState->GetStaticVariableByName(SHADER_TYPE_VERTEX, "Constants")->Set(m_VSConstants);
 
 		// Since we are using mutable variable, we must create a shader resource binding object
 		// http://diligentgraphics.com/2016/03/23/resource-binding-model-in-diligent-engine-2-0/
-		m_pPSO->CreateShaderResourceBinding(&m_SRB, true);
+		texturedMeshPipelineState->CreateShaderResourceBinding(&m_SRB, true);
 
-		m_CubeVertexBuffer = textuedMesh.CreateVertexBuffer(m_pDevice, TexturedMesh::VERTEX_COMPONENT_FLAG_POS_UV);
-		m_CubeIndexBuffer = textuedMesh.CreateIndexBuffer(m_pDevice);
-		m_TextureSRV = textuedMesh.LoadTexture(m_pDevice, "DGLogo.png")->GetDefaultView(TEXTURE_VIEW_SHADER_RESOURCE);
+		m_CubeVertexBuffer = texturedMesh.CreateVertexBuffer(m_pDevice, TexturedMesh::VERTEX_COMPONENT_FLAG_POS_UV);
+		m_CubeIndexBuffer = texturedMesh.CreateIndexBuffer(m_pDevice);
+		m_TextureSRV = texturedMesh.LoadTexture(m_pDevice, "DGLogo.png")->GetDefaultView(TEXTURE_VIEW_SHADER_RESOURCE);
 		// Set cube texture SRV in the SRB
 		m_SRB->GetVariableByName(SHADER_TYPE_PIXEL, "g_Texture")->Set(m_TextureSRV);
 	}
@@ -193,7 +193,7 @@ public:
 	void PopulateInstanceBuffer()
 	{
 		// Populate instance data buffer
-		std::vector<float4x4> InstanceData(m_GridSize * m_GridSize * m_GridSize);
+		std::vector<float4x4> InstanceData(pow(m_GridSize, 3));
 
 		float fGridSize = static_cast<float>(m_GridSize);
 
@@ -218,7 +218,8 @@ public:
 					float zOffset = 2.f * (z + 0.5f + offset_distr(gen)) / fGridSize - 1.f;
 					// Random scale
 					float scale = BaseScale * scale_distr(gen);
-					// Random rotation
+					// Random rotation+
+
 					float4x4 rotation = float4x4::RotationX(rot_distr(gen)) * float4x4::RotationY(rot_distr(gen)) * float4x4::RotationZ(rot_distr(gen));
 					// Combine rotation, scale and translation
 					float4x4 matrix = rotation * float4x4::Scale(scale, scale, scale) * float4x4::Translation(xOffset, yOffset, zOffset);
@@ -248,18 +249,18 @@ public:
 			CBConstants[1] = m_RotationMatrix.Transpose();
 		}
 
-		Uint32   offsets[] = { 0, 0 };
-		IBuffer* pBuffs[] = { m_CubeVertexBuffer, m_InstanceBuffer };
+		Uint32 offsets[] = {0, 0};
+		IBuffer* pBuffs[] = {m_CubeVertexBuffer, m_InstanceBuffer};
 		m_pImmediateContext->SetVertexBuffers(0, _countof(pBuffs), pBuffs, offsets, RESOURCE_STATE_TRANSITION_MODE_TRANSITION, SET_VERTEX_BUFFERS_FLAG_RESET);
 		m_pImmediateContext->SetIndexBuffer(m_CubeIndexBuffer, 0, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
 
 		// Set the pipeline state
-		m_pImmediateContext->SetPipelineState(m_pPSO);
+		m_pImmediateContext->SetPipelineState(texturedMeshPipelineState);
 		// Commit shader resources. RESOURCE_STATE_TRANSITION_MODE_TRANSITION mode
 		// makes sure that resources are transitioned to required states.
 		m_pImmediateContext->CommitShaderResources(m_SRB, RESOURCE_STATE_TRANSITION_MODE_TRANSITION);
 
-		DrawIndexedAttribs DrawAttrs;       // This is an indexed draw call
+		DrawIndexedAttribs DrawAttrs; // This is an indexed draw call
 		DrawAttrs.IndexType = VT_UINT32; // Index type
 		DrawAttrs.NumIndices = 36;
 		DrawAttrs.NumInstances = m_GridSize * m_GridSize * m_GridSize; // The number of instances
@@ -285,11 +286,9 @@ public:
 	{
 		float ElapsedTime = 0.1;
 		CurrTime += ElapsedTime;
-		// Apply rotation
-		float4x4 CubeModelTransform = float4x4::RotationY(static_cast<float>(CurrTime) * 1.0f) * float4x4::RotationX(-PI_F * 0.1f);
 
 		// Camera is at (0, 0, -5) looking along the Z axis
-		float4x4 View = float4x4::Translation(0.f, 0.0f, 5.0f);
+		float4x4 View = float4x4::Translation(0.f, 0.0f, 4.0f);
 
 		// Get pretransform matrix that rotates the scene according the surface orientation
 		auto SrfPreTransform = GetSurfacePretransformMatrix(float3{0, 0, 0});
@@ -301,7 +300,7 @@ public:
 		m_ViewProjMatrix = View * SrfPreTransform * Proj;
 
 		// Global rotation matrix
-		m_RotationMatrix = float4x4::RotationY(static_cast<float>(CurrTime) * 1.0f) * float4x4::RotationX(-static_cast<float>(CurrTime) * 0.25f);
+		m_RotationMatrix = float4x4::RotationY(CurrTime * 1.0f) * float4x4::RotationX(-CurrTime * 0.25f);
 		PopulateInstanceBuffer();
 	}
 
@@ -376,7 +375,7 @@ private:
 	RENDER_DEVICE_TYPE m_DeviceType = RENDER_DEVICE_TYPE_D3D11;
 };
 
-std::unique_ptr<Tutorial00App> g_pTheApp;
+std::unique_ptr<Tutorial00App> app;
 
 LRESULT CALLBACK MessageProc(HWND, UINT, WPARAM, LPARAM);
 // Main
@@ -386,10 +385,10 @@ int WINAPI RenderInit(HINSTANCE instance, int cmdShow)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-	g_pTheApp.reset(new Tutorial00App);
+	app.reset(new Tutorial00App);
 
 	const auto* cmdLine = GetCommandLineA();
-	if (!g_pTheApp->ProcessCommandLine(cmdLine))
+	if (!app->ProcessCommandLine(cmdLine))
 		return -1;
 
 	std::wstring Title(L"Tutorial00: Hello Win32");
@@ -417,12 +416,11 @@ int WINAPI RenderInit(HINSTANCE instance, int cmdShow)
 	ShowWindow(wnd, cmdShow);
 	UpdateWindow(wnd);
 
-	if (!g_pTheApp->InitializeDiligentEngine(wnd))
+	if (!app->InitializeDiligentEngine(wnd))
 		return -1;
 
-	g_pTheApp->CreatePipelineState();
+	app->CreatePipelineState();
 
-	
 
 	// Main message loop
 	MSG msg = {0};
@@ -435,13 +433,13 @@ int WINAPI RenderInit(HINSTANCE instance, int cmdShow)
 		}
 		else
 		{
-			g_pTheApp->Update();
-			g_pTheApp->Render();
-			g_pTheApp->Present();
+			app->Update();
+			app->Render();
+			app->Present();
 		}
 	}
 
-	g_pTheApp.reset();
+	app.reset();
 
 	return (int)msg.wParam;
 }
@@ -459,9 +457,9 @@ LRESULT CALLBACK MessageProc(HWND wnd, UINT message, WPARAM wParam, LPARAM lPara
 			return 0;
 		}
 	case WM_SIZE: // Window size has been changed
-		if (g_pTheApp)
+		if (app)
 		{
-			g_pTheApp->WindowResize(LOWORD(lParam), HIWORD(lParam));
+			app->WindowResize(LOWORD(lParam), HIWORD(lParam));
 		}
 		return 0;
 

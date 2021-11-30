@@ -46,7 +46,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.2.props" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.5.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -85,13 +85,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>
       </OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 7.3.0\include;$(SolutionDir)include\doctest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/experimental:newLambdaProcessor  /openmp:llvm /openmp:experimental  %(AdditionalOptions)</AdditionalOptions>
@@ -150,12 +150,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 7.3.0\include;$(SolutionDir)include\doctest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -231,7 +231,6 @@
     <ClCompile Include="Project-GigaForge.cpp" />
     <ClCompile Include="Src\Rendering\InputControllerWin32.cpp" />
     <ClCompile Include="Src\Rendering\TexturedMesh.cpp" />
-    <ClCompile Include="Src\Rendering\TexturedMesh.ixx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
@@ -247,8 +246,7 @@
     <ClInclude Include="Src\CudaEcs\CudaSparseArray.h">
       <FileType>CppHeader</FileType>
     </ClInclude>
-    <ClInclude Include="Src\CudaCommon\DataCompressor.h" />
-    <ClInclude Include="Src\Ecs\Globals.h" />
+    <ClInclude Include="Src\Ecs\EcsGlobals.h" />
     <ClInclude Include="Src\Ecs\CommandBuffer.h" />
     <ClInclude Include="Src\Ecs\CommandBufferExecutor.h" />
     <ClInclude Include="Src\Ecs\ComponentArray.h" />
@@ -256,6 +254,10 @@
     <ClInclude Include="Src\Ecs\EntityManager.h" />
     <ClInclude Include="Src\Ecs\SparseArray.h" />
     <ClInclude Include="Src\Ecs\EcsSystem.h" />
+    <ClInclude Include="Src\Game\Camera.h" />
+    <ClInclude Include="Src\Game\GameMain.h" />
+    <ClInclude Include="Src\Globals.h" />
+    <ClInclude Include="Src\OptixMesh\Mesher.h" />
     <ClInclude Include="Src\Rendering\InputController.h" />
     <ClInclude Include="Src\Rendering\InputControllerWin32.hpp" />
     <ClInclude Include="Src\Rendering\RenderingGlobals.h" />
@@ -263,11 +265,20 @@
     <ClCompile Include="Src\Rendering\RenderingTestWin32.cpp" />
     <ClInclude Include="Src\Rendering\TexturedMesh.h" />
     <ClInclude Include="Src\Rendering\TexturedMeshRenderer.h" />
-    <ClInclude Include="Tests\TestMemory.h" />
+    <ClCompile Include="Tests\MesherTest.cpp" />
+    <ClCompile Include="Tests\RenderTest.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
+    <ClCompile Include="Tests\TestEcs.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
+    <ClCompile Include="Tests\TestMemory.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="Src\CudaEcs\CudaTest.cu" />
+    <CudaCompile Include="Tests\CudaTest.cu" />
     <CudaCompile Include="Src\CudaEcs\File.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
   </ItemGroup>
@@ -277,8 +288,11 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.2.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.5.targets" />
   </ImportGroup>
 </Project>
