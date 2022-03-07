@@ -5,6 +5,10 @@
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Profile|x64">
+      <Configuration>Profile</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -37,6 +41,13 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -59,6 +70,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -77,6 +91,11 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)include;</IncludePath>
     <MultiProcFXC>true</MultiProcFXC>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)include;</IncludePath>
+    <MultiProcFXC>true</MultiProcFXC>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)include;</IncludePath>
@@ -91,7 +110,7 @@
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>
       </OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 7.3.0\include;$(SolutionDir)include\doctest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 7.3.0\include;$(SolutionDir)include\doctest;$(SolutionDir)include\ultralight\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <AdditionalOptions>/experimental:newLambdaProcessor  /openmp:llvm /openmp:experimental  %(AdditionalOptions)</AdditionalOptions>
@@ -102,8 +121,8 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
-      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;DiligentCore.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;spirv-cross-core.lib;SPIRV.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;glew-static.lib;GenericCodeGen.lib;MachineIndependent.lib;d3d11.lib;d3d12.lib;Diligent-Imgui.lib;Diligent-TextureLoader.lib;LibTiff.lib;LibPng.lib;LibJpeg.lib;ZLib.lib;GraphicsEngineD3D12_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)include\diligent\lib\DiligentTools\Debug;$(SolutionDir)include\diligent\lib\DiligentFx\Debug;$(SolutionDir)include\diligent\lib\DiligentCore\Debug;$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;DiligentCore.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;spirv-cross-core.lib;SPIRV.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;glew-static.lib;GenericCodeGen.lib;MachineIndependent.lib;d3d11.lib;d3d12.lib;Diligent-Imgui.lib;Diligent-TextureLoader.lib;LibTiff.lib;LibPng.lib;LibJpeg.lib;ZLib.lib;GraphicsEngineD3D12_64.lib;Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)include\diligent\lib\DiligentTools\Debug;$(SolutionDir)include\diligent\lib\DiligentFx\Debug;$(SolutionDir)include\diligent\lib\DiligentCore\Debug;$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\debug;%(AdditionalLibraryDirectories);$(SolutionDir)include\ultralight\lib;$(SolutionDir)include\ultralight\bin</AdditionalLibraryDirectories>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -114,6 +133,12 @@
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)\include\ultralight\bin\UltraLight.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\UltraLightCore.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\AppCore.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\WebCore.dll" "$(TargetDir)" /y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='NDebug|x64'">
     <ClCompile>
@@ -155,7 +180,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <OpenMPSupport>false</OpenMPSupport>
-      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 7.3.0\include;$(SolutionDir)include\doctest;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 7.3.0\include;$(SolutionDir)include\doctest;$(SolutionDir)include\ultralight\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
@@ -172,8 +197,60 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
-      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;DiligentCore.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;spirv-cross-core.lib;SPIRV.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;glew-static.lib;GenericCodeGen.lib;MachineIndependent.lib;d3d11.lib;d3d12.lib;Diligent-Imgui.lib;Diligent-TextureLoader.lib;LibTiff.lib;LibPng.lib;LibJpeg.lib;ZLib.lib;GraphicsEngineD3D12_64.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)include\diligent\lib\DiligentTools\Release;$(SolutionDir)include\diligent\lib\DiligentFx\Release;$(SolutionDir)include\diligent\lib\DiligentCore\Release;$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;DiligentCore.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;spirv-cross-core.lib;SPIRV.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;glew-static.lib;GenericCodeGen.lib;MachineIndependent.lib;d3d11.lib;d3d12.lib;Diligent-Imgui.lib;Diligent-TextureLoader.lib;LibTiff.lib;LibPng.lib;LibJpeg.lib;ZLib.lib;GraphicsEngineD3D12_64.lib;Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)include\diligent\lib\DiligentTools\Release;$(SolutionDir)include\diligent\lib\DiligentFx\Release;$(SolutionDir)include\diligent\lib\DiligentCore\Release;$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\release;%(AdditionalLibraryDirectories);$(SolutionDir)include\ultralight\lib;$(SolutionDir)include\ultralight\bin</AdditionalLibraryDirectories>
+    </Link>
+    <CudaCompile>
+      <CodeGeneration>compute_75,sm_75</CodeGeneration>
+      <TargetMachinePlatform>64</TargetMachinePlatform>
+      <AdditionalOptions>-std=c++17 -Xcompiler "/std:c++17" --extended-lambda   -Xcompiler "-openmp"
+ %(AdditionalOptions)</AdditionalOptions>
+      <InterleaveSourceInPTX>true</InterleaveSourceInPTX>
+      <GenerateLineInfo>true</GenerateLineInfo>
+      <FastMath>true</FastMath>
+      <ExtensibleWholeProgramCompilation>false</ExtensibleWholeProgramCompilation>
+      <GPUDebugInfo>true</GPUDebugInfo>
+    </CudaCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)\include\ultralight\bin\UltraLight.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\UltraLightCore.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\AppCore.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\WebCore.dll" "$(TargetDir)" /y</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <OpenMPSupport>false</OpenMPSupport>
+      <AdditionalIncludeDirectories>$(SolutionDir)include\directx;$(SolutionDir)include\eigen;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsTools\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngine\interface;$(SolutionDir)include\diligent\include\DiligentCore\Graphics\GraphicsEngineD3D12\interface;$(SolutionDir)include\diligent\include\DiligentCore\Common\interface;$(SolutionDir)include\diligent\include;$(SolutionDir)include\nvcomp;$(SolutionDir)DiligentEngine\build\Win64\install\include;C:\ProgramData\NVIDIA Corporation\OptiX SDK 7.3.0\include;$(SolutionDir)include\doctest;$(SolutionDir)include\ultralight\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <OmitFramePointers>false</OmitFramePointers>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <Optimization>Full</Optimization>
+      <AdditionalOptions>/experimental:newLambdaProcessor  /openmp:llvm  /openmp:experimental %(AdditionalOptions)</AdditionalOptions>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <Profile>true</Profile>
+      <AdditionalDependencies>d3dcompiler.lib;D3D12.lib;dxgi.lib;nvcomp.lib;DiligentCore.lib;HLSL.lib;OGLCompiler.lib;OSDependent.lib;spirv-cross-core.lib;SPIRV.lib;SPIRV-Tools-opt.lib;SPIRV-Tools.lib;glew-static.lib;GenericCodeGen.lib;MachineIndependent.lib;d3d11.lib;d3d12.lib;Diligent-Imgui.lib;Diligent-TextureLoader.lib;LibTiff.lib;LibPng.lib;LibJpeg.lib;ZLib.lib;GraphicsEngineD3D12_64.lib;Ultralight.lib;UltralightCore.lib;WebCore.lib;AppCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)include\diligent\lib\DiligentTools\Release;$(SolutionDir)include\diligent\lib\DiligentFx\Release;$(SolutionDir)include\diligent\lib\DiligentCore\Release;$(SolutionDir)include\nvcomp;$(SolutionDir)include\nvcomp\release;%(AdditionalLibraryDirectories);$(SolutionDir)include\ultralight\lib;$(SolutionDir)include\ultralight\bin</AdditionalLibraryDirectories>
     </Link>
     <CudaCompile>
       <CodeGeneration>compute_75,sm_75</CodeGeneration>
@@ -188,6 +265,12 @@
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
     </FxCompile>
+    <PostBuildEvent>
+      <Command>xcopy "$(SolutionDir)\include\ultralight\bin\UltraLight.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\UltraLightCore.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\AppCore.dll" "$(TargetDir)" /y
+xcopy "$(SolutionDir)\include\ultralight\bin\WebCore.dll" "$(TargetDir)" /y</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugRelease|x64'">
     <ClCompile>
@@ -231,6 +314,7 @@
     <ClCompile Include="Project-GigaForge.cpp" />
     <ClCompile Include="Src\Rendering\InputControllerWin32.cpp" />
     <ClCompile Include="Src\Rendering\TexturedMesh.cpp" />
+    <ClCompile Include="Tests\UltralightTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\CudaCommon\Bitset.h" />
@@ -255,7 +339,14 @@
     <ClInclude Include="Src\Ecs\SparseArray.h" />
     <ClInclude Include="Src\Ecs\EcsSystem.h" />
     <ClInclude Include="Src\Game\Camera.h" />
+    <ClInclude Include="Src\Game\Collisions.h" />
     <ClInclude Include="Src\Game\GameMain.h" />
+    <ClInclude Include="Src\Game\Traffic\Curve.h" />
+    <ClInclude Include="Src\Game\Traffic\Intersection.h" />
+    <ClInclude Include="Src\Game\Traffic\IntersectionCollisions.h" />
+    <ClInclude Include="Src\Game\Traffic\TrafficGraph.h" />
+    <ClInclude Include="Src\Game\Traffic\VehicleTemplate.h" />
+    <ClInclude Include="Src\Game\Traffic\Lane.h" />
     <ClInclude Include="Src\Globals.h" />
     <ClInclude Include="Src\OptixMesh\Mesher.h" />
     <ClInclude Include="Src\Rendering\InputController.h" />
@@ -275,17 +366,22 @@
     <ClCompile Include="Tests\TestMemory.cpp">
       <FileType>CppHeader</FileType>
     </ClCompile>
+    <ClCompile Include="Tests\TestTraffic.cpp">
+      <FileType>CppHeader</FileType>
+    </ClCompile>
     <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="Tests\CudaTest.cu" />
+    <CudaCompile Include="Tests\CudaEcsTest.cu" />
     <CudaCompile Include="Src\CudaEcs\File.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
+    <CudaCompile Include="Tests\CudaOtherTest.cu" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\Pixel.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Profile|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>

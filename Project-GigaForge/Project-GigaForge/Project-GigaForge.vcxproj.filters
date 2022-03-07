@@ -39,6 +39,12 @@
     <ClCompile Include="Tests\TestMemory.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\TestTraffic.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\UltralightTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Timer.h">
@@ -127,11 +133,33 @@
     <ClInclude Include="Src\Globals.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Src\Game\Traffic\Lane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Traffic\VehicleTemplate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Traffic\Intersection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Traffic\TrafficGraph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Traffic\Curve.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Traffic\IntersectionCollisions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Game\Collisions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="Tests\CudaTest.cu" />
+    <CudaCompile Include="Tests\CudaEcsTest.cu" />
     <CudaCompile Include="Src\CudaEcs\NVCompTest.cu" />
     <CudaCompile Include="Src\CudaEcs\File.cu" />
+    <CudaCompile Include="Tests\CudaOtherTest.cu" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\Pixel.hlsl" />

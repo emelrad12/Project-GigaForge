@@ -1,4 +1,5 @@
 #pragma once
+#include <concurrent_vector.h>
 #include <unordered_map>
 #include <iostream>
 #include <vector>
@@ -14,7 +15,8 @@ using std::vector;
 using std::string;
 using std::unordered_map;
 using std::tuple;
-#define concurrentVectorImpl ConcurrentVector
+using Concurrency::concurrent_vector;
+#define concurrentVectorImpl concurrent_vector
 #ifdef _DEBUG
 #define DEBUG true
 #else

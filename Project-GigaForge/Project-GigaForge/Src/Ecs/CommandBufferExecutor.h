@@ -1,7 +1,7 @@
 #pragma once
 #include "CommandBuffer.h"
 #include "ComponentArray.h"
-#include "Globals.h"
+#include "../Globals.h"
 
 namespace GigaEntity
 {
